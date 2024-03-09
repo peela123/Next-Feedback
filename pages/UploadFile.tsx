@@ -11,7 +11,12 @@ import NotificationBox from "./components/NotificationBox";
 import Navbar from "./components/Navbar";
 import { LuFileUp } from "react-icons/lu";
 import { Select } from "@mantine/core";
+import { TextInput } from "@mantine/core";
+import { IMaskInput } from "react-imask";
+import { Input } from "@mantine/core";
 import { error } from "console";
+import { Loader } from "@mantine/core";
+import { FileInput } from "@mantine/core";
 
 interface Field {
   value: string;
@@ -34,7 +39,7 @@ const UploadFile: FC = () => {
   const [courseNo, setCourseNo] = useState<string>("");
 
   const [file, setFile] = useState<File | null>(null); //current upload excel file
-  const [fileName, setFileName] = useState<string>("No file chosen.."); //current file name
+  const [fileName, setFileName] = useState<string>("nofile"); //current file name
 
   const [responseMessage, setResponseMessage] = useState<string>("no error");
 
@@ -43,34 +48,20 @@ const UploadFile: FC = () => {
   const [studentId, setStudentId] = useState("");
   const [errorMessage, setErrorMessage] = useState("no error");
 
-  const years: Field[] = [
-    { value: "2023", label: "2023" },
-    { value: "2024", label: "2024" },
-    { value: "2025", label: "2025" },
-  ];
-
   const semesters: Field[] = [
     { value: "1", label: "1" },
     { value: "2", label: "2" },
     { value: "summer", label: "summer" },
   ];
 
-  const courseNos: Field[] = [
-    { value: "261207", label: "261207" },
-    { value: "515191", label: "515191" },
-    { value: "261161", label: "261161" },
-    { value: "261111", label: "261111" },
-  ];
-
-  const courseNames: Field[] = [
-    { value: "Computer", label: "Computer" },
-    { value: "Biology", label: "Biology" },
-    { value: "Calculus", label: "Calculus" },
-    {
-      value: "Internet And Online Community",
-      label: "Internet And Online Community",
-    },
-  ];
+  function signOut() {
+    //Call sign out api without caring what is the result
+    //It will fail only in case of client cannot connect to server
+    //This is left as an exercise for you. Good luck.
+    axios.post("/api/signOut").finally(() => {
+      router.push("/");
+    });
+  }
 
   const handleUploadClick = async () => {
     try {
@@ -101,6 +92,8 @@ const UploadFile: FC = () => {
           "Content-Type": "application/json",
         };
 
+        if (cmuAccount === "") signOut();
+
         //make HTTP POST request to the backend with JSON data
         const response = await axios
           .post(
@@ -122,7 +115,7 @@ const UploadFile: FC = () => {
     }
   };
 
-  //auto fill selected file name
+  //   auto fill selected file name
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
@@ -161,15 +154,48 @@ const UploadFile: FC = () => {
       });
   }, []);
 
-  //auto fill courseName and courseNo
+  //   auto fill fields
   useEffect(() => {
-    const fileNameWithoutExtension: string = fileName.replace(/\.[^/.]+$/, ""); // Removes file extension
+    let course = "";
+    let number = "";
+    let year = "";
 
-    const number = fileNameWithoutExtension.match(/^\d+/)?.[0] || ""; // Matches the leading digits
-    const restOfFile = fileNameWithoutExtension.replace(/^\d+\s*/, ""); // Removes the leading digits and any spaces
-    setCourseName(restOfFile);
+    if (file) {
+      const fileNameWithoutExtension = file.name.replace(/\.[^/.]+$/, ""); // Removes file extension
+
+      // First, extract courseNo and academicYear based on updated criteria
+      const numberMatch = fileNameWithoutExtension.match(/\d{6}/); // Matches exactly 6 digits for courseNo
+      number = numberMatch ? numberMatch[0] : "";
+
+      // Use a different approach to extract the year to ensure it doesn't conflict with courseNo
+      const yearAndCourseNameMatch = fileNameWithoutExtension
+        .replace(new RegExp(number), "")
+        .trim();
+      const yearMatch = yearAndCourseNameMatch.match(/(?<!\d)\d{4}(?!\d)/); // Matches 4 digits not preceded or followed by another digit, ensuring it's likely a year
+      year = yearMatch ? yearMatch[0] : "";
+
+      // Extract courseName considering it may be attached to numbers
+      // Remove the identified number and year from the string
+      let tempFileName = fileNameWithoutExtension
+        .replace(new RegExp(number, "g"), "")
+        .replace(new RegExp(year, "g"), "")
+        .trim();
+
+      // Assume the rest is courseName, which may include digits
+      course = tempFileName;
+
+      // Debugging logs
+      console.log("file name:", file?.name);
+      console.log("number:", number);
+      console.log("course:", course);
+      console.log("year:", year);
+    }
+
+    // Update state
+    setCourseName(course);
     setCourseNo(number);
-  }, [fileName]);
+    setAcademicYear(year); // Assuming you have a state setter for academicYear
+  }, [file]);
 
   return (
     <main className="flex flex-col h-screen">
@@ -184,66 +210,69 @@ const UploadFile: FC = () => {
             <p className="text-3xl">Make a quick summary!</p>
           </section>
           {/* file input section */}
-          <section className="flex flex-row gap-x-10 items-center">
-            <div className="gap-y-2 flex flex-col">
-              <p className="filelabel-container whitespace-nowrap border-black border-2">
-                {fileName}
-              </p>
+          <section className="flex flex-row gap-x-10 items-center bg-red-400">
+            <div
+              className="flex flex-col gap-y-2 w-full"
+              style={{ width: "300px" }}
+            >
+              <FileInput
+                //   label="Upload files"
+                description="Input description"
+                placeholder="Upload files"
+                value={file}
+                clearable
+                onChange={setFile}
+
+                // error="Invalid name"
+              />
               <ProgressBar />
             </div>
-            <input
-              type="file"
-              id="file-upload"
-              style={{ display: "none" }}
-              onChange={handleFileChange}
-            />
-            <label
-              htmlFor="file-upload"
-              className="uploadfile-btn-style hover:bg-blue-400"
-            >
-              <LuFileUp size={25} />
-              Choose File
-            </label>
           </section>
-          {/* course no and course name */}
-          <section className="flex flex-row gap-x-20 font-bold">
-            <Select
+
+          <section className="flex flex-col gap-y-2">
+            <TextInput
               className="flex flex-col gap-x-4"
-              label="Course No."
-              description="6 digits of course no."
-              placeholder="....."
-              data={courseNos}
+              //   description="enters here"
+              label="Course Name"
+              placeholder="ex.Biology"
+              withAsterisk
+              value={courseName}
+              onChange={(event: any) =>
+                setCourseName(event.currentTarget.value)
+              }
+            />
+            <TextInput
+              className="flex flex-col gap-x-4"
+              //   description="enters here"
+              label="Course No"
+              placeholder="ex.261xxx"
+              withAsterisk
               value={courseNo}
-              onSearchChange={(value: string) => setCourseNo(value)}
+              onChange={(event: any) => setCourseNo(event.currentTarget.value)}
+            />
+
+            <TextInput
+              className="flex flex-col gap-x-4"
+              //   description="enters here"
+              label="Academic Year"
+              placeholder="ex.2023"
+              withAsterisk
+              value={academicYear}
+              onChange={(event: any) =>
+                setAcademicYear(event.currentTarget.value)
+              }
             />
 
             <Select
               className="flex flex-col gap-x-4"
-              description="enters here"
-              label="Course Name"
-              placeholder="....."
-              data={courseNames}
-              value={courseName}
-              onSearchChange={(value: string) => setCourseName(value)}
-            />
-          </section>
-          {/* semester and year */}
-          <section className="flex flex-row gap-x-20">
-            <Select
-              className="flex flex-col gap-x-4"
               label="Semester"
-              placeholder="....."
+              //   placeholder="....."
+              withAsterisk
               data={semesters}
               onSearchChange={(value: string) => setSemester(value)}
             />
-            <Select
-              className="flex flex-col gap-x-4"
-              label="Academic Year"
-              placeholder="....."
-              data={years}
-              onSearchChange={(value: string) => setAcademicYear(value)}
-            />
           </section>
+
           {/* analyze button section */}
           <section className="mb-10 flex flex-row gap-x-24">
             {file === null ? (
@@ -261,8 +290,9 @@ const UploadFile: FC = () => {
                 Upload File
               </button>
             )}
+            <Loader color="blue" size={27} />
           </section>
-          <NotificationBox text={errorMessage} />
+          {/* <NotificationBox text={errorMessage} /> */}
         </div>
       </div>
     </main>
