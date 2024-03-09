@@ -1,14 +1,17 @@
 import { useState, useEffect, FC } from "react";
 import { useRouter } from "next/router";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { WhoAmIResponse } from "./api/whoAmI";
 
 import readXlsxFile from "read-excel-file";
-import axios from "axios";
 
 import ProgressBar from "./components/ProgressBar";
+import NotificationBox from "./components/NotificationBox";
 // import { Switch } from "@mantine/core";
 import Navbar from "./components/Navbar";
 import { LuFileUp } from "react-icons/lu";
 import { Select } from "@mantine/core";
+import { error } from "console";
 
 interface Field {
   value: string;
@@ -33,7 +36,12 @@ const UploadFile: FC = () => {
   const [file, setFile] = useState<File | null>(null); //current upload excel file
   const [fileName, setFileName] = useState<string>("No file chosen.."); //current file name
 
-  const [responseMessage, setResponseMessage] = useState<string>("");
+  const [responseMessage, setResponseMessage] = useState<string>("no error");
+
+  const [fullName, setFullName] = useState("");
+  const [cmuAccount, setCmuAccount] = useState("");
+  const [studentId, setStudentId] = useState("");
+  const [errorMessage, setErrorMessage] = useState("no error");
 
   const years: Field[] = [
     { value: "2023", label: "2023" },
@@ -82,6 +90,7 @@ const UploadFile: FC = () => {
         //prepare document to send to the backend
         const requestData = {
           comments: comments,
+          cmuAccount: cmuAccount,
         };
 
         //convert  to JSON
@@ -95,7 +104,7 @@ const UploadFile: FC = () => {
         //make HTTP POST request to the backend with JSON data
         const response = await axios
           .post(
-            `http://127.0.0.1:5000/api/upload?courseName=${courseName}&courseNo=${parseInt(
+            `http://127.0.0.1:5000/api/user_upload?courseName=${courseName}&courseNo=${parseInt(
               courseNo,
               10
             )}&semester=${semester}&academicYear=${parseInt(academicYear, 10)}`,
@@ -113,7 +122,7 @@ const UploadFile: FC = () => {
     }
   };
 
-  //auto fill fileName
+  //auto fill selected file name
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
@@ -121,6 +130,36 @@ const UploadFile: FC = () => {
       setFileName(selectedFile.name);
     }
   };
+
+  // get auth info
+  useEffect(() => {
+    //All cookies that belong to the current url will be sent with the request automatically
+    //so we don't have to attach token to the request
+    //You can view token (stored in cookies storage) in browser devtools (F12). Open tab "Application" -> "Cookies"
+    axios
+      .get<{}, AxiosResponse<WhoAmIResponse>, {}>("/api/whoAmI")
+      .then((response) => {
+        const data = response.data;
+        if (data.ok) {
+          setCmuAccount(data.cmuAccount);
+          setFullName(data.firstName + " " + data.lastName);
+          setStudentId(data.studentId ?? "No Student Id");
+        }
+      })
+      .catch((error: AxiosError<WhoAmIResponse>) => {
+        if (!error.response) {
+          setErrorMessage(
+            "Cannot connect to the network. Please try again later."
+          );
+        } else if (error.response.status === 401) {
+          setErrorMessage("Authentication failed");
+        } else if (error.response.data && error.response.data.ok === false) {
+          setErrorMessage(error.response.data.message);
+        } else {
+          setErrorMessage("Unknown error occurred. Please try again later");
+        }
+      });
+  }, []);
 
   //auto fill courseName and courseNo
   useEffect(() => {
@@ -134,7 +173,7 @@ const UploadFile: FC = () => {
 
   return (
     <main className="flex flex-col h-screen">
-      <Navbar />
+      <Navbar fullName={fullName} cmuAccount={cmuAccount} />
       <div
         className="flex justify-center items-center grow bg-white"
         style={{ backgroundColor: "#FEF4F4" }}
@@ -208,15 +247,22 @@ const UploadFile: FC = () => {
           {/* analyze button section */}
           <section className="mb-10 flex flex-row gap-x-24">
             {file === null ? (
-              <button className="analyze-btn-style" onClick={handleUploadClick}>
+              <button
+                className="analyze-btn-style hover:bg-blue-500"
+                onClick={handleUploadClick}
+              >
                 view analyze
               </button>
             ) : (
-              <button className="analyze-btn-style" onClick={handleUploadClick}>
+              <button
+                className="analyze-btn-style hover:bg-blue-500"
+                onClick={handleUploadClick}
+              >
                 Upload File
               </button>
             )}
           </section>
+          <NotificationBox text={errorMessage} />
         </div>
       </div>
     </main>

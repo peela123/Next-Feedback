@@ -23,13 +23,11 @@ interface FetchedCourse {
   assessmentComments: Comment[];
   contentComments: Comment[];
 }
-
 interface Comment {
   text: string;
   sentiment: string;
   label: string;
 }
-
 interface Props {
   fetchedCourse: FetchedCourse[];
   onCourseBtnClick: (
@@ -41,16 +39,24 @@ interface Props {
     amComments: Comment[],
     CComments: Comment[]
   ) => void;
+  fullName: string;
+  cmuAccount: string;
 }
 
-const SideBar: FC<Props> = ({ fetchedCourse, onCourseBtnClick }) => {
+const SideBar: FC<Props> = ({
+  fetchedCourse,
+  onCourseBtnClick,
+  fullName,
+  cmuAccount,
+}) => {
   const [selectedCourseNo, setSelectedCourseNo] = useState<number | null>(null);
 
   const router = useRouter();
-  const [fullName, setFullName] = useState("");
-  const [cmuAccount, setCmuAccount] = useState("");
-  const [studentId, setStudentId] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  function signOut() {
+    axios.post("/api/signOut").finally(() => {
+      router.push("/");
+    });
+  }
 
   return (
     <nav
@@ -60,8 +66,11 @@ const SideBar: FC<Props> = ({ fetchedCourse, onCourseBtnClick }) => {
       <section className="mx-1 text-white grow">
         {/* user info button*/}
         <section className="flex flex-row">
-          <UserInfoBtn width="33" height="33" />
-          <p className="">Username123</p>
+          <UserInfoBtn />
+          <div className="flex flex-col pl-4">
+            <p>{fullName}</p>
+            <p>{cmuAccount}</p>
+          </div>
         </section>
 
         {/* line break */}
@@ -146,10 +155,6 @@ const SideBar: FC<Props> = ({ fetchedCourse, onCourseBtnClick }) => {
               <p className="pl-3">Summarize</p>
             </button>
           </div>
-          {/* <button className="mt-4 sidebar-btn-style hover:bg-neutral-500">
-            <MdOutlineSubject size={30} />
-            <p className="pl-3">Summarize</p>
-          </button> */}
           {/* dark mode section */}
           <button className="mt-4 sidebar-btn-style flex flex-row justiy-center items-center hover:bg-neutral-500">
             <MdOutlineDarkMode size={30} />
@@ -169,6 +174,7 @@ const SideBar: FC<Props> = ({ fetchedCourse, onCourseBtnClick }) => {
         <Link
           href="/"
           className="flex flex-row justify-evenly items-center my-10 rounded-2xl h-9 bg-slate-600 hover:bg-red-400"
+          onClick={signOut}
         >
           <BsArrowReturnLeft size={32} color={"red"} />
           <p className="text-lg">Log Out</p>

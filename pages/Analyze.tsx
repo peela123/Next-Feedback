@@ -1,25 +1,24 @@
-import { FC } from "react";
+import { useState, useEffect, FC } from "react";
 // import { useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
-import axios from "axios";
+import { WhoAmIResponse } from "./api/whoAmI";
 
 import Navbar from "./components/Navbar";
 import SideBar from "./components/SideBar";
 import BarCharts from "./components/BarCharts";
 import PieCharts from "./components/PieCharts";
-
 interface FetchedCourse {
   courseName: string;
   courseNo: number;
   semester: string;
   academicYear: number;
-
+  cmuAccount: string;
   teachingMethodComments: Comment[];
   assessmentComments: Comment[];
   contentComments: Comment[];
 }
-
 interface Comment {
   text: string;
   sentiment: string;
@@ -28,28 +27,6 @@ interface Comment {
 
 const Analyze: FC = () => {
   const [fetchedCourse, setFetchedCourse] = useState<FetchedCourse[]>([]); //array for store course object
-
-  //get value from home component by useNavigate() and store BasicInfo
-  //   const location = useLocation();
-  //   const [courseName, setCourseName] = useState<string>(
-  //     location.state ? location.state.courseName : ""
-  //   );
-
-  //   const [courseNo, setCourseNo] = useState<number>(
-  //     location.state ? location.state.courseNo : NaN
-  //   );
-
-  //   const [academicYear, setAcademicYear] = useState<number>(
-  //     location.state ? location.state.academicYear : NaN
-  //   );
-
-  //   const [semester, setSemester] = useState<string>(
-  //     location.state ? location.state.semester : ""
-  //   );
-
-  //   const [responseMessage, setResponseMessage] = useState<string>(
-  //     location.state ? location.state.responseMessage : ""
-  //   );
   const [courseName, setCourseName] = useState<string>();
   const [courseNo, setCourseNo] = useState<number>();
   const [academicYear, setAcademicYear] = useState<number>();
@@ -64,6 +41,12 @@ const Analyze: FC = () => {
   const [contentComments, setContentComments] = useState<Comment[] | null>(
     null
   );
+
+  const router = useRouter();
+  const [fullName, setFullName] = useState("");
+  const [cmuAccount, setCmuAccount] = useState<string>("");
+  const [studentId, setStudentId] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleCourseBtnClick = (
     name: string,
@@ -84,75 +67,71 @@ const Analyze: FC = () => {
     setContentComments(cComments);
   };
 
-  //retrive all course for user account
+  //get auth info
+  useEffect(() => {
+    //All cookies that belong to the current url will be sent with the request automatically
+    //so we don't have to attach token to the request
+    //You can view token (stored in cookies storage) in browser devtools (F12). Open tab "Application" -> "Cookies"
+    axios
+      .get<{}, AxiosResponse<WhoAmIResponse>, {}>("/api/whoAmI")
+      .then((response) => {
+        const data = response.data;
+        if (data.ok) {
+          setFullName(data.firstName + " " + data.lastName);
+          setCmuAccount(data.cmuAccount);
+          setStudentId(data.studentId ?? "No Student Id");
+        }
+      })
+      .catch((error: AxiosError<WhoAmIResponse>) => {
+        if (!error.response) {
+          setErrorMessage(
+            "Cannot connect to the network. Please try again later."
+          );
+        } else if (error.response.status === 401) {
+          setErrorMessage("Authentication failed");
+        } else if (error.response.data && error.response.data.ok === false) {
+          setErrorMessage(error.response.data.message);
+        } else {
+          setErrorMessage("Unknown error occurred. Please try again later");
+        }
+      });
+  }, []);
+
+  //retrive all course according to cmuAccount
   useEffect(() => {
     axios
-      .get(`http://127.0.0.1:5000/courses`)
+      .get(`http://127.0.0.1:5000/user_courses?cmuAccount=${cmuAccount}`)
       .then((res) => {
         //axios already parse JSON to javascript object
+        // console.log("user courses:", res.data);
         setFetchedCourse(res.data);
+        // console.log("user courses:", res.data);
+        // console.log("fetched course:", fetchedCourse);
       })
       .catch((error) => {
         console.error("Error fetching data: ", error);
       });
-  }, []);
-  //   }, [location.state]);
+  }, [cmuAccount]);
 
   return (
     <main className="bg-cyan-400 h-screen">
       {/* <Navbar /> */}
       {/* main container */}
       <div className="flex flex-row h-full bg-red-600">
-        {/* left side */}
+        {/* left side container*/}
         <div className="flex w-2/12 h-full">
           <SideBar
             fetchedCourse={fetchedCourse}
             onCourseBtnClick={handleCourseBtnClick}
+            fullName={fullName}
+            cmuAccount={cmuAccount}
           />
         </div>
-        {/* right side */}
+        {/* right side container*/}
         <div
           className="flex flex-col h-full grow w-10/12"
           style={{ backgroundColor: "#7C6B6B" }}
         >
-          {/* <p className="bg-blue-300">
-            {`[current dataset] courseName = ${courseName} courseNo = ${courseNo}  selected year = ${academicYear} selected term = ${semester} responseMessage = ${responseMessage}`}
-          </p> */}
-
-          {/* pie and bar container */}
-          {/* <section className="flex flex-row gap-x-12 ml-6 mr-10 mt-6 "> */}
-          {/* pie container */}
-          {/* <section
-              style={{
-                backgroundColor: "#3b3b3b",
-                height: "200px",
-                width: "270px",
-              }}
-              className="rounded-lg flex flex-row justify-center items-center"
-            >
-              <PieCharts
-                tmComments={teachingMethodComments}
-                amComments={assessmentComments}
-                cComments={contentComments}
-              />
-            </section> */}
-          {/* bar container */}
-          {/* <section
-              style={{
-                backgroundColor: "#3b3b3b",
-                height: "200px",
-                width: "500px",
-              }}
-              className="rounded-lg w-24 flex flex-row justify-center items-center"
-            >
-              <BarCharts
-                tmComments={teachingMethodComments}
-                amComments={assessmentComments}
-                cComments={contentComments}
-              />
-            </section> */}
-          {/* </section> */}
-
           {/* summary container */}
           <section
             className="flex flex-col bg-red-400 mt-6 ml-6 rounded-lg"
