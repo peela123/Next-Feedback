@@ -1,5 +1,4 @@
 import { useState, useEffect, FC } from "react";
-// import { useLocation } from "react-router-dom";
 import { useRouter } from "next/router";
 import axios, { AxiosError, AxiosResponse } from "axios";
 
@@ -9,21 +8,11 @@ import Navbar from "./components/Navbar";
 import SideBar from "./components/SideBar";
 import BarCharts from "./components/BarCharts";
 import PieCharts from "./components/PieCharts";
-interface FetchedCourse {
-  courseName: string;
-  courseNo: number;
-  semester: string;
-  academicYear: number;
-  cmuAccount: string;
-  teachingMethodComments: Comment[];
-  assessmentComments: Comment[];
-  contentComments: Comment[];
-}
-interface Comment {
-  text: string;
-  sentiment: string;
-  label: string;
-}
+import { Label } from "recharts";
+import OverallSummary from "./components/OverallSummary";
+import SentimentSummary from "./components/SentimentSummary";
+
+import { FetchedCourse, Comment } from "../types/CommentType";
 
 const Analyze: FC = () => {
   const [fetchedCourse, setFetchedCourse] = useState<FetchedCourse[]>([]); //array for store course object
@@ -48,6 +37,8 @@ const Analyze: FC = () => {
   const [studentId, setStudentId] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [isSummarize, setIsSummarize] = useState<boolean>(false);
+
   const handleCourseBtnClick = (
     name: string,
     no: number,
@@ -65,6 +56,10 @@ const Analyze: FC = () => {
     setTeachingMethodComments(tmComments);
     setAssessmentComments(amComments);
     setContentComments(cComments);
+  };
+
+  const toggleSummarize = () => {
+    setIsSummarize((prevIsSummarize) => !prevIsSummarize);
   };
 
   //get auth info
@@ -103,10 +98,7 @@ const Analyze: FC = () => {
       .get(`http://127.0.0.1:5000/user_courses?cmuAccount=${cmuAccount}`)
       .then((res) => {
         //axios already parse JSON to javascript object
-        // console.log("user courses:", res.data);
         setFetchedCourse(res.data);
-        // console.log("user courses:", res.data);
-        // console.log("fetched course:", fetchedCourse);
       })
       .catch((error) => {
         console.error("Error fetching data: ", error);
@@ -115,7 +107,6 @@ const Analyze: FC = () => {
 
   return (
     <main className="bg-cyan-400 h-screen">
-      {/* <Navbar /> */}
       {/* main container */}
       <div className="flex flex-row h-full bg-red-600">
         {/* left side container*/}
@@ -125,90 +116,125 @@ const Analyze: FC = () => {
             onCourseBtnClick={handleCourseBtnClick}
             fullName={fullName}
             cmuAccount={cmuAccount}
+            isSummarize={isSummarize} // You're already passing this correctly
+            toggleSummarize={toggleSummarize} // Make sure this line is included
           />
         </div>
+
         {/* right side container*/}
         <div
           className="flex flex-col h-full grow w-10/12"
-          style={{ backgroundColor: "#7C6B6B" }}
+          // style={{ backgroundColor: "#7C6B6B" }}
+          style={{ backgroundColor: "#EFEFEF" }}
         >
-          {/* summary container */}
-          <section
-            className="flex flex-col bg-red-400 mt-6 ml-6 rounded-lg"
-            style={{
-              backgroundColor: "#3b3b3b",
-              height: "93%",
-              width: "1200px",
-            }}
-          >
-            {/* summary text container*/}
-            <div
-              className="rounded-lg w-fit ml-6 my-4"
+          {isSummarize ? (
+            // summarize container
+            <section
+              className="flex flex-col justify-between mt-6 ml-6 rounded-lg bg-red-400"
               style={{
-                backgroundColor: "#3C3939",
-                borderColor: "#151212",
-                borderWidth: "2px",
+                height: "93%",
+                width: "1200px",
+                // backgroundColor: "#fdfdfd",
+                backgroundColor: "#D9D9D9",
               }}
             >
-              <h1 className="summary-text-style py-1.5 px-3">
-                {`หัวข้อที่ถูกพูดถึง(${
-                  (teachingMethodComments?.length ?? 0) +
-                  (assessmentComments?.length ?? 0) +
-                  (contentComments?.length ?? 0)
-                })`}
-              </h1>
-            </div>
-            {/*  each labels container*/}
-            <div
-              className="overflow-auto rounded-lg pl-8 pt-2 w-full h-full text-gray-300"
-              // style={{ height: "325px" }}
-            >
-              <div>
-                <h1 className="summary-text-style mb-1">
-                  Content ({contentComments?.length ?? 0})
+              <div className="rounded-lg w-fit ml-6 my-4">
+                {/* <p style={{ color: "#414141" }}> */}
+                <p>
+                  ปีการศึกษา {academicYear} ภาคเรียนที่ {semester} กระบวนวิชา{" "}
+                  {courseName}
+                  isSummarize {isSummarize ? "True" : "False"}
+                </p>
+                <h1 className="text-xl ">
+                  {`หัวข้อที่พูดถึง(${
+                    (teachingMethodComments?.length ?? 0) +
+                    (assessmentComments?.length ?? 0) +
+                    (contentComments?.length ?? 0)
+                  })`}
                 </h1>
-                <ul>
-                  {contentComments?.map((comment: Comment, index: number) => (
-                    // <li
-                    //   key={index}
-                    // >{`comment: ${comment.text} sentiment: ${comment.sentiment} label: ${comment.label}`}</li>
-                    <li key={index}>{`comment: ${comment.text}`}</li>
-                  ))}
-                </ul>
               </div>
-              <div>
-                <h1 className="summary-text-style mb-1">
-                  Assessment ({assessmentComments?.length ?? 0})
+              <div className="grow bg-red-400">
+                <OverallSummary />
+                <SentimentSummary
+                  fetchedCourse={fetchedCourse}
+                  courseNo={courseNo}
+                />
+              </div>
+            </section>
+          ) : (
+            // feedback container
+            <section
+              className="flex flex-col mt-6 ml-6 rounded-lg"
+              style={{
+                backgroundColor: "#D9D9D9",
+
+                height: "93%",
+                width: "1200px",
+              }}
+            >
+              <div className="rounded-lg w-fit ml-6 my-4">
+                <p style={{ color: "#414141" }}>
+                  ปีการศึกษา {academicYear} ภาคเรียนที่ {semester} กระบวนวิชา{" "}
+                  {courseName}
+                  isSummarize {isSummarize ? "True" : "False"}
+                </p>
+                <h1 className="text-xl ">
+                  {`หัวข้อที่พูดถึง(${
+                    (teachingMethodComments?.length ?? 0) +
+                    (assessmentComments?.length ?? 0) +
+                    (contentComments?.length ?? 0)
+                  })`}
                 </h1>
-                <ul>
-                  {assessmentComments?.map(
-                    (comment: Comment, index: number) => (
-                      // <li
-                      //   key={index}
-                      // >{`comment: ${comment.text} sentiment: ${comment.sentiment} label: ${comment.label}`}</li>
-                      <li key={index}>{`comment: ${comment.text}`}</li>
-                    )
-                  )}
-                </ul>
               </div>
 
-              <div>
-                <h1 className="summary-text-style mb-1">
-                  Teaching Method ({teachingMethodComments?.length ?? 0})
-                </h1>
-                <ul>
-                  {teachingMethodComments?.map(
-                    (comment: Comment, index: number) => (
-                      // <li
-                      //   key={index}
-                      // >{`comment: ${comment.text} sentiment: ${comment.sentiment} label: ${comment.label}`}</li>
-                      <li key={index}>{`comment: ${comment.text}`}</li>
-                    )
-                  )}
-                </ul>
+              <div
+                className="overflow-auto rounded-lg pl-8 pt-2 w-full h-full"
+                style={{ backgroundColor: "#FDFDFD" }}
+              >
+                <div>
+                  <h1 className="summary-text-style mb-1">
+                    Content ({contentComments?.length ?? 0})
+                  </h1>
+                  <ul>
+                    {contentComments?.map((comment: Comment, index: number) => (
+                      <li
+                        key={index}
+                      >{`comment: ${comment.text} sentiment: ${comment.sentiment} label: ${comment.label}`}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h1 className="summary-text-style mb-1">
+                    Assessment ({assessmentComments?.length ?? 0})
+                  </h1>
+                  <ul>
+                    {assessmentComments?.map(
+                      (comment: Comment, index: number) => (
+                        <li
+                          key={index}
+                        >{`comment: ${comment.text} sentiment: ${comment.sentiment} label: ${comment.label}`}</li>
+                      )
+                    )}
+                  </ul>
+                </div>
+
+                <div>
+                  <h1 className="summary-text-style mb-1">
+                    Teaching Method ({teachingMethodComments?.length ?? 0})
+                  </h1>
+                  <ul>
+                    {teachingMethodComments?.map(
+                      (comment: Comment, index: number) => (
+                        <li
+                          key={index}
+                        >{`comment: ${comment.text} sentiment: ${comment.sentiment} label: ${comment.label}`}</li>
+                      )
+                    )}
+                  </ul>
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+          )}
         </div>
       </div>
     </main>

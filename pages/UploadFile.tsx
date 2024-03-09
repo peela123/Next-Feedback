@@ -248,14 +248,14 @@ const UploadFile: FC = () => {
           <section className="mb-10 flex flex-row gap-x-24">
             {file === null ? (
               <button
-                className="analyze-btn-style hover:bg-blue-500"
+                className="analyze-btn-style bg-blue-400 hover:bg-blue-500"
                 onClick={handleUploadClick}
               >
                 view analyze
               </button>
             ) : (
               <button
-                className="analyze-btn-style hover:bg-blue-500"
+                className="analyze-btn-style bg-lime-400 hover:bg-lime-500"
                 onClick={handleUploadClick}
               >
                 Upload File

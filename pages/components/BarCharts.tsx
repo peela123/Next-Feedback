@@ -2,15 +2,12 @@ import { FC, useState, useEffect } from "react";
 
 import { BarChart } from "@mantine/charts";
 
-interface Comment {
-  text: string;
-  sentiment: string;
-  label: string;
-}
+import { Comment } from "../../types/CommentType";
+
 interface Props {
-  amComments: Comment[] | null;
-  cComments: Comment[] | null;
-  tmComments: Comment[] | null;
+  assessmentComments: Comment[] | null;
+  contentComments: Comment[] | null;
+  teachingMethodComments: Comment[] | null;
 }
 interface DataPlot {
   class: string;
@@ -19,7 +16,11 @@ interface DataPlot {
   neutral: number;
 }
 
-const BarCharts: FC<Props> = ({ tmComments, amComments, cComments }) => {
+const BarCharts: FC<Props> = ({
+  teachingMethodComments,
+  assessmentComments,
+  contentComments,
+}) => {
   const [data, setData] = useState<DataPlot[]>([
     { class: "Content", positive: 0, negative: 0, neutral: 0 },
     { class: "Assessment", positive: 0, negative: 0, neutral: 0 },
@@ -51,11 +52,11 @@ const BarCharts: FC<Props> = ({ tmComments, amComments, cComments }) => {
     };
 
     // Updating counts for Teaching Method comments
-    const tmCounts = countSentiments(tmComments);
+    const tmCounts = countSentiments(teachingMethodComments);
     // Updating counts for Assessment comments
-    const amCounts = countSentiments(amComments);
+    const amCounts = countSentiments(assessmentComments);
     // Updating counts for Content comments
-    const cCounts = countSentiments(cComments);
+    const cCounts = countSentiments(contentComments);
 
     // Set the updated data state
     setData([
@@ -78,7 +79,7 @@ const BarCharts: FC<Props> = ({ tmComments, amComments, cComments }) => {
         neutral: tmCounts.neu,
       },
     ]);
-  }, [amComments, cComments, tmComments]); // Dependency array to re-run effect when any of the comments arrays changes
+  }, [assessmentComments, contentComments, teachingMethodComments]); // Dependency array to re-run effect when any of the comments arrays changes
 
   return (
     <BarChart

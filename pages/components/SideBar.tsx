@@ -41,13 +41,16 @@ interface Props {
   ) => void;
   fullName: string;
   cmuAccount: string;
+  isSummarize: boolean; // New prop
+  toggleSummarize: () => void; // New prop
 }
 
 const SideBar: FC<Props> = ({
   fetchedCourse,
-  onCourseBtnClick,
   fullName,
   cmuAccount,
+  onCourseBtnClick,
+  toggleSummarize,
 }) => {
   const [selectedCourseNo, setSelectedCourseNo] = useState<number | null>(null);
 
@@ -86,15 +89,15 @@ const SideBar: FC<Props> = ({
 
         {/* all menu */}
         <section className="flex flex-col mt-3 gap-y-2">
-          {/* course */}
-          <div className="flex flex-col gap-y-2" style={{ width: "" }}>
+          {/* course section*/}
+          <div className="flex flex-col gap-y-2">
             {/* course button */}
             <button className="sidebar-btn-style flex flex-row justify-center items-center hover:bg-neutral-500 transition-colors duration-150">
               <GrNotes size={25} color={"white"} />
               <p className="pl-3">Course</p>
               <IoChevronDownSharp size={25} color={"white"} className="ml-16" />
             </button>
-            {/*render course button with no duplicate name */}
+            {/*sub course button*/}
             {fetchedCourse
               .filter(
                 (course, index, self) =>
@@ -112,15 +115,16 @@ const SideBar: FC<Props> = ({
               ))}
           </div>
 
-          {/* dataset*/}
+          {/* feedback section*/}
           <div className="flex flex-col gap-y-2 mt-4 overflow-auto">
-            {/* dataset button */}
+            {/* feedback button */}
             <button className="sidebar-btn-style flex flex-row justify-center items-center border-2 border-transparent hover:bg-stone-500 transition-colors duration-150">
               <BsDatabase size={30} />
               <p className="pl-3"> Feedback</p>
               <IoChevronDownSharp size={25} className="ml-12" />
             </button>
-            {/* sub dataset button*/}
+            {/* sub feedback button*/}
+
             {selectedCourseNo &&
               fetchedCourse
                 .filter(
@@ -149,8 +153,12 @@ const SideBar: FC<Props> = ({
           </div>
 
           {/* sumarize section*/}
-          <div>
-            <button className="mt-4 sidebar-btn-style flex flex-row justiy-center items-center hover:bg-neutral-500">
+          <div className="flex flex-col gap-y-2">
+            {/* summarize button */}
+            <button
+              className="flex flex-row justify-center items-center mt-4 sidebar-btn-style hover:bg-neutral-500"
+              onClick={() => toggleSummarize()}
+            >
               <MdOutlineSubject size={30} />
               <p className="pl-3">Summarize</p>
             </button>
