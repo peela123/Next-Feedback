@@ -31,22 +31,21 @@ const data = [
 ];
 
 const UploadFile: FC = () => {
-  const router = useRouter();
-
   const [semester, setSemester] = useState<string>("");
   const [academicYear, setAcademicYear] = useState<string>("");
   const [courseName, setCourseName] = useState<string>("");
   const [courseNo, setCourseNo] = useState<string>("");
 
   const [file, setFile] = useState<File | null>(null); //current upload excel file
-  const [fileName, setFileName] = useState<string>("nofile"); //current file name
+  const [fileName, setFileName] = useState<string>("No file chosen...."); //current file name
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [responseMessage, setResponseMessage] = useState<string>("no error");
-
+  const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [cmuAccount, setCmuAccount] = useState("");
   const [studentId, setStudentId] = useState("");
   const [errorMessage, setErrorMessage] = useState("no error");
+  const [responseMessage, setResponseMessage] = useState<string>("no error"); //message about upload file error
 
   const semesters: Field[] = [
     { value: "1", label: "1" },
@@ -72,6 +71,9 @@ const UploadFile: FC = () => {
           alert("Please fill all required fields");
           return;
         }
+
+        setIsLoading(true);
+
         // read excel file
         const excelData = await readXlsxFile(file);
 
@@ -84,7 +86,7 @@ const UploadFile: FC = () => {
           cmuAccount: cmuAccount,
         };
 
-        //convert  to JSON
+        //convert to JSON
         const jsonRequestData = JSON.stringify(requestData);
 
         // Set the Content-Type header to indicate JSON data
@@ -154,7 +156,7 @@ const UploadFile: FC = () => {
       });
   }, []);
 
-  //   auto fill fields
+  //   auto fill input fields
   useEffect(() => {
     let course = "";
     let number = "";
@@ -198,38 +200,48 @@ const UploadFile: FC = () => {
   }, [file]);
 
   return (
-    <main className="flex flex-col h-screen">
+    <main className="flex flex-col h-screen bg-red-400">
       <Navbar fullName={fullName} cmuAccount={cmuAccount} />
       <div
-        className="flex justify-center items-center grow bg-white"
-        style={{ backgroundColor: "#FEF4F4" }}
+        className="grow flex flex-row justify-center items-center  bg-red-400"
+        // style={{ backgroundColor: "#FEF4F4" }}
+        style={{ backgroundColor: "#404040" }}
       >
-        <div className="flex flex-col justify-between items-center w-5/6 h-5/6 mx-auto mt-8 bg-white">
-          <section className="flex flex-col text-center mt-6 gap-y-6">
+        {/* box */}
+        <div
+          className="flex flex-col items-center w-11/12 h-max border-2 border-black rounded bg-white"
+          style={{ width: "94%", height: "90%" }}
+        >
+          <section className="flex flex-col text-center mt-6 gap-y-2">
             <h1 className="text-3xl font-bold">File Classifier</h1>
-            <p className="text-3xl">Make a quick summary!</p>
+            <p className="text-2xl">Make a quick summary!</p>
           </section>
           {/* file input section */}
-          <section className="flex flex-row gap-x-10 items-center bg-red-400">
-            <div
-              className="flex flex-col gap-y-2 w-full"
-              style={{ width: "350px" }}
-            >
-              <FileInput
-                //   label="Upload files"
-                description="Input description"
-                placeholder="Upload files"
-                value={file}
-                clearable
-                onChange={setFile}
-
-                // error="Invalid name"
-              />
+          <section className="flex flex-row gap-x-10 items-center">
+            <div className="gap-y-2 flex flex-col">
+              <p className="filelabel-container whitespace-nowrap border-black border-2">
+                {fileName}
+              </p>
               <ProgressBar />
             </div>
+            <input
+              type="file"
+              id="file-upload"
+              // placeholder="no file chosen........"
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+            <label
+              htmlFor="file-upload"
+              className="uploadfile-btn-style hover:bg-blue-400"
+              // aria-placeholder="no file.//"
+            >
+              <LuFileUp size={25} />
+              Choose File
+            </label>
           </section>
-
-          <section className="flex flex-col gap-y-2">
+          {/* input fields */}
+          <section className="flex flex-col gap-y-4 my-4">
             <TextInput
               className="flex flex-col gap-x-4"
               //   description="enters here"
@@ -260,7 +272,7 @@ const UploadFile: FC = () => {
 
             <TextInput
               className="flex flex-col gap-x-4"
-              //   description="enters here"
+              // description="must be 4 digits"
               label="Academic Year"
               placeholder="ex.2023"
               withAsterisk
@@ -280,30 +292,36 @@ const UploadFile: FC = () => {
             />
           </section>
 
-          {/* analyze button section */}
-          <section className="mb-10 flex flex-row gap-x-24">
+          {/* upload/view button section */}
+          <section className="flex flex-row justify-center items-center mt-8">
             {file === null ? (
               <button
-                className="analyze-btn-style bg-blue-400 hover:bg-blue-500"
+                className="border-2 border-black px-6 py-2 rounded bg-blue-400 hover:bg-blue-500"
                 onClick={handleUploadClick}
               >
                 view analyze
               </button>
             ) : (
-              <button
-                className="analyze-btn-style bg-lime-400 hover:bg-lime-500"
-                onClick={handleUploadClick}
-              >
-                Upload File
-              </button>
+              <div className="flex items-center">
+                <button
+                  className="border-2 border-black px-6 py-2 rounded bg-lime-400 hover:bg-lime-500"
+                  onClick={handleUploadClick}
+                >
+                  Upload File
+                </button>
+                {isLoading ? (
+                  <Loader color="blue" size={27} className="ml-6" />
+                ) : (
+                  <div></div>
+                )}
+              </div>
             )}
-            <Loader color="blue" size={27} />
           </section>
           {/* <NotificationBox text={errorMessage} /> */}
-          <p>
+          {/* <p>
             courseName:${courseName} courseNo:{courseNo} year:{academicYear}{" "}
             semester:{semester}
-          </p>
+          </p> */}
         </div>
       </div>
     </main>

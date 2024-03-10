@@ -12,22 +12,10 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { BsArrowReturnLeft } from "react-icons/bs";
 import { IoChevronDownSharp } from "react-icons/io5";
 import { Select, Menu } from "@mantine/core";
+import { Button } from "@mantine/core";
 
-interface FetchedCourse {
-  courseName: string;
-  courseNo: number;
-  academicYear: number;
-  semester: string;
+import { FetchedCourse, Comment } from "../../types/CommentType";
 
-  teachingMethodComments: Comment[];
-  assessmentComments: Comment[];
-  contentComments: Comment[];
-}
-interface Comment {
-  text: string;
-  sentiment: string;
-  label: string;
-}
 interface Props {
   fetchedCourse: FetchedCourse[];
   onCourseBtnClick: (
@@ -41,8 +29,9 @@ interface Props {
   ) => void;
   fullName: string;
   cmuAccount: string;
-  isSummarize: boolean; // New prop
-  toggleSummarize: () => void; // New prop
+  isSummarize: boolean;
+  toggleSummarize: () => void;
+  toggleDarkMode: () => void;
 }
 
 const SideBar: FC<Props> = ({
@@ -51,6 +40,7 @@ const SideBar: FC<Props> = ({
   cmuAccount,
   onCourseBtnClick,
   toggleSummarize,
+  toggleDarkMode,
 }) => {
   const [selectedCourseNo, setSelectedCourseNo] = useState<number | null>(null);
 
@@ -108,6 +98,14 @@ const SideBar: FC<Props> = ({
                 <button
                   key={index}
                   className="sidebarsub-btn-style hover:bg-neutral-500"
+                  // disabled={
+                  //   selectedCourseNo !== null &&
+                  //   selectedCourseNo !== course.courseNo
+                  // }
+                  style={{
+                    backgroundColor:
+                      selectedCourseNo === course.courseNo ? "red" : "",
+                  }}
                   onClick={() => setSelectedCourseNo(course.courseNo || null)}
                 >
                   {`${course.courseNo || ""} ${course.courseName || ""}`}
@@ -134,7 +132,7 @@ const SideBar: FC<Props> = ({
                 .map((course: FetchedCourse, index: number) => (
                   <button
                     key={index}
-                    className="sidebarsub-btn-style hover:bg-neutral-500"
+                    className="sidebarsub-btn-style hover:bg-neutral-500 "
                     onClick={() =>
                       onCourseBtnClick(
                         course.courseName,
@@ -164,9 +162,12 @@ const SideBar: FC<Props> = ({
             </button>
           </div>
           {/* dark mode section */}
-          <button className="mt-4 sidebar-btn-style flex flex-row justiy-center items-center hover:bg-neutral-500">
+          <button
+            onClick={toggleDarkMode}
+            className="mt-4 sidebar-btn-style flex flex-row justiy-center items-center hover:bg-neutral-500"
+          >
             <MdOutlineDarkMode size={30} />
-            <p className="pl-3 ">Dark Mode</p>
+            <p className="pl-3">Dark Mode</p>
           </button>
           {/* add feedback section */}
           <Link

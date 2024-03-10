@@ -2,11 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-.html,
+/* .html,
 body {
   height: 100%;
   margin: 0;
-}
+} */
+
+
 
 .sidebar-btn-style {
   background-color: #565656;
@@ -30,14 +32,12 @@ body {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-
 }
 
 
 .analyze-btn-style {
   border: solid black 2px;
   border-radius: 5px;
-
 
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   width: 200px;
@@ -73,7 +73,6 @@ body {
   align-items: center;
   stroke-width: 2px;
   stroke: #000;
-
 }
 
 .login-container-style {
@@ -84,7 +83,6 @@ body {
   border: solid black 0.5px;
   border-radius: 5px;
   background: #FFF;
-
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
 }
@@ -114,7 +112,6 @@ body {
 
 .cmu-text {
   color: #000;
-
   font-family: Open Sans;
   font-size: 30px;
   font-style: normal;
@@ -128,11 +125,9 @@ body {
   align-items: center;
   padding-left: 5px;
   padding-right: 5px;
-
 }
 
 .filelabel-container {
-
   width: 303px;
   height: 32px;
   flex-shrink: 0;
@@ -140,19 +135,15 @@ body {
 }
 
 .login-btn-style {
-
   flex-shrink: 0;
   border-radius: 2px;
   border: 0.2px solid #000;
-
   background: #C098D9;
 }
 
 .login-text-style {
-
   flex-shrink: 0;
   color: #000;
-
   font-family: Inter;
   font-size: 18px;
   font-style: normal;
@@ -167,16 +158,10 @@ body {
   /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to right, #2C5364, #203A43, #0F2027);
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
 }
 
-
-
 .summary-text-style {
-
   flex-shrink: 0;
-
-
   font-family: Inter;
   font-size: 20px;
   font-style: normal;

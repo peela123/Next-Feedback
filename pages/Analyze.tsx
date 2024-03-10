@@ -16,10 +16,10 @@ import { FetchedCourse, Comment } from "../types/CommentType";
 
 const Analyze: FC = () => {
   const [fetchedCourse, setFetchedCourse] = useState<FetchedCourse[]>([]); //array for store course object
-  const [courseName, setCourseName] = useState<string>();
+  const [courseName, setCourseName] = useState<string>("");
   const [courseNo, setCourseNo] = useState<number>();
   const [academicYear, setAcademicYear] = useState<number>();
-  const [semester, setSemester] = useState<string>();
+  const [semester, setSemester] = useState<string>("");
 
   const [teachingMethodComments, setTeachingMethodComments] = useState<
     Comment[] | null
@@ -38,6 +38,14 @@ const Analyze: FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const [isSummarize, setIsSummarize] = useState<boolean>(false);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+
+  const toggleSummarize = () => {
+    setIsSummarize((prevIsSummarize) => !prevIsSummarize);
+  };
+  const toggleDarkMode = () => {
+    setIsDarkMode((prevIsDarkMode) => !prevIsDarkMode);
+  };
 
   const handleCourseBtnClick = (
     name: string,
@@ -57,9 +65,22 @@ const Analyze: FC = () => {
     setAssessmentComments(amComments);
     setContentComments(cComments);
   };
+  const [isSentimentView, setIsSentimentView] = useState(false);
+  const handleSentimentView = () => {
+    setIsSentimentView((prev) => !prev); // Toggle between true and false
+  };
 
-  const toggleSummarize = () => {
-    setIsSummarize((prevIsSummarize) => !prevIsSummarize);
+  const getColorForSentiment = (sentiment: string) => {
+    switch (sentiment) {
+      case "positive":
+        return "text-green-500"; // Green for positive
+      case "negative":
+        return "text-red-500"; // Red for negative
+      case "neutral":
+        return "text-gray-500"; // Gray for neutral
+      default:
+        return "text-black"; // Default color if sentiment doesn't match
+    }
   };
 
   //get auth info
@@ -105,6 +126,10 @@ const Analyze: FC = () => {
       });
   }, [cmuAccount]);
 
+  // useEffect(() => {
+  //   console.log("courseName", courseName);
+  // }, [courseName]);
+
   return (
     <main className="bg-cyan-400 h-screen">
       {/* main container */}
@@ -118,6 +143,7 @@ const Analyze: FC = () => {
             cmuAccount={cmuAccount}
             isSummarize={isSummarize} // You're already passing this correctly
             toggleSummarize={toggleSummarize} // Make sure this line is included
+            toggleDarkMode={toggleDarkMode}
           />
         </div>
 
@@ -125,7 +151,7 @@ const Analyze: FC = () => {
         <div
           className="flex flex-col h-full grow w-10/12"
           // style={{ backgroundColor: "#7C6B6B" }}
-          style={{ backgroundColor: "#EFEFEF" }}
+          style={{ backgroundColor: isDarkMode ? "#292929" : "#EFEFEF" }}
         >
           {isSummarize ? (
             // summarize container
@@ -139,22 +165,16 @@ const Analyze: FC = () => {
               }}
             >
               <div className="rounded-lg w-fit ml-6 my-4">
-                {/* <p style={{ color: "#414141" }}> */}
-                <p>
-                  ปีการศึกษา {academicYear} ภาคเรียนที่ {semester} กระบวนวิชา{" "}
-                  {courseName}
-                  isSummarize {isSummarize ? "True" : "False"}
+                <p style={{ color: "#414141" }}>
+                  สถิติย้อนหลังกระบวนวิชา:{""}
+                  {courseName === "" ? "ยังไม่ได้เลือกวิชา" : courseName}
                 </p>
-                <h1 className="text-xl ">
-                  {`หัวข้อที่พูดถึง(${
-                    (teachingMethodComments?.length ?? 0) +
-                    (assessmentComments?.length ?? 0) +
-                    (contentComments?.length ?? 0)
-                  })`}
-                </h1>
               </div>
               <div className="grow bg-red-400">
-                <OverallSummary />
+                <OverallSummary
+                  fetchedCourse={fetchedCourse}
+                  courseNo={courseNo}
+                />
                 <SentimentSummary
                   fetchedCourse={fetchedCourse}
                   courseNo={courseNo}
@@ -175,18 +195,27 @@ const Analyze: FC = () => {
               <div className="rounded-lg w-fit ml-6 my-4">
                 <p style={{ color: "#414141" }}>
                   ปีการศึกษา {academicYear} ภาคเรียนที่ {semester} กระบวนวิชา{" "}
-                  {courseName}
-                  isSummarize {isSummarize ? "True" : "False"}
+                  {courseName} isSummarize {isSummarize ? "True" : "False"}{" "}
+                  isDarkMode {isDarkMode ? "True" : "False"}
                 </p>
-                <h1 className="text-xl ">
-                  {`หัวข้อที่พูดถึง(${
-                    (teachingMethodComments?.length ?? 0) +
-                    (assessmentComments?.length ?? 0) +
-                    (contentComments?.length ?? 0)
-                  })`}
-                </h1>
-              </div>
 
+                <div className="flex flex-row gap-x-4 items-center">
+                  <h1 className="text-xl">
+                    {`ความคิดเห็นทั้งหมด(${
+                      (teachingMethodComments?.length ?? 0) +
+                      (assessmentComments?.length ?? 0) +
+                      (contentComments?.length ?? 0)
+                    })`}
+                  </h1>
+                  <button
+                    onClick={handleSentimentView}
+                    className="border-2 border-black px-2 rounded w-36 hover:bg-gray-400"
+                  >
+                    {isSentimentView ? "default view" : "sentiment view"}
+                  </button>
+                </div>
+              </div>
+              {/* feedback labels */}
               <div
                 className="overflow-auto rounded-lg pl-8 pt-2 w-full h-full"
                 style={{ backgroundColor: "#FDFDFD" }}
@@ -199,6 +228,13 @@ const Analyze: FC = () => {
                     {contentComments?.map((comment: Comment, index: number) => (
                       <li
                         key={index}
+                        className={
+                          isSentimentView
+                            ? getColorForSentiment(
+                                comment.sentiment.toLowerCase()
+                              )
+                            : "text-black"
+                        }
                       >{`comment: ${comment.text} sentiment: ${comment.sentiment} label: ${comment.label}`}</li>
                     ))}
                   </ul>
@@ -212,6 +248,13 @@ const Analyze: FC = () => {
                       (comment: Comment, index: number) => (
                         <li
                           key={index}
+                          className={
+                            isSentimentView
+                              ? getColorForSentiment(
+                                  comment.sentiment.toLowerCase()
+                                )
+                              : "text-black"
+                          }
                         >{`comment: ${comment.text} sentiment: ${comment.sentiment} label: ${comment.label}`}</li>
                       )
                     )}
@@ -227,6 +270,13 @@ const Analyze: FC = () => {
                       (comment: Comment, index: number) => (
                         <li
                           key={index}
+                          className={
+                            isSentimentView
+                              ? getColorForSentiment(
+                                  comment.sentiment.toLowerCase()
+                                )
+                              : "text-black"
+                          }
                         >{`comment: ${comment.text} sentiment: ${comment.sentiment} label: ${comment.label}`}</li>
                       )
                     )}
