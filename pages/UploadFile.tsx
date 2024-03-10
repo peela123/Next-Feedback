@@ -213,7 +213,7 @@ const UploadFile: FC = () => {
           <section className="flex flex-row gap-x-10 items-center bg-red-400">
             <div
               className="flex flex-col gap-y-2 w-full"
-              style={{ width: "300px" }}
+              style={{ width: "350px" }}
             >
               <FileInput
                 //   label="Upload files"
@@ -248,7 +248,14 @@ const UploadFile: FC = () => {
               placeholder="ex.261xxx"
               withAsterisk
               value={courseNo}
-              onChange={(event: any) => setCourseNo(event.currentTarget.value)}
+              onChange={(event: any) => {
+                const value = event.currentTarget.value;
+                // Regular expression to match exactly 6 digits
+                const regex = /^\d{0,6}$/;
+                if (regex.test(value)) {
+                  setCourseNo(value);
+                }
+              }}
             />
 
             <TextInput
@@ -293,6 +300,10 @@ const UploadFile: FC = () => {
             <Loader color="blue" size={27} />
           </section>
           {/* <NotificationBox text={errorMessage} /> */}
+          <p>
+            courseName:${courseName} courseNo:{courseNo} year:{academicYear}{" "}
+            semester:{semester}
+          </p>
         </div>
       </div>
     </main>
