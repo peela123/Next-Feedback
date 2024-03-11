@@ -8,6 +8,8 @@ interface Props {
   assessmentComments: Comment[] | null;
   contentComments: Comment[] | null;
   teachingMethodComments: Comment[] | null;
+  academicYear: number;
+  semester: string;
 }
 interface DataPlot {
   class: string;
@@ -20,6 +22,8 @@ const BarCharts: FC<Props> = ({
   teachingMethodComments,
   assessmentComments,
   contentComments,
+  academicYear,
+  semester,
 }) => {
   const [data, setData] = useState<DataPlot[]>([
     { class: "Content", positive: 0, negative: 0, neutral: 0 },
@@ -83,9 +87,10 @@ const BarCharts: FC<Props> = ({
 
   return (
     <BarChart
-      h={220}
       data={data}
       dataKey="class"
+      className="flex flex-col border-2 border-black h-full"
+      style={{ width: "400px" }}
       // type="percent"
       tooltipAnimationDuration={200}
       withLegend

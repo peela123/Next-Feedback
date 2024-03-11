@@ -18,14 +18,14 @@ import { FetchedCourse, Comment } from "../../types/CommentType";
 
 interface Props {
   fetchedCourse: FetchedCourse[];
-  onCourseBtnClick: (
+  handleSubFeedbackClick: (
     courseName: string,
     courseNo: number,
-    year: number,
-    term: string,
-    tmComments: Comment[],
-    amComments: Comment[],
-    CComments: Comment[]
+    academicYear: number,
+    semester: string,
+    teachingMethodComments: Comment[],
+    assessmentComments: Comment[],
+    contentComments: Comment[]
   ) => void;
   fullName: string;
   cmuAccount: string;
@@ -38,7 +38,7 @@ const SideBar: FC<Props> = ({
   fetchedCourse,
   fullName,
   cmuAccount,
-  onCourseBtnClick,
+  handleSubFeedbackClick,
   toggleSummarize,
   toggleDarkMode,
 }) => {
@@ -98,15 +98,22 @@ const SideBar: FC<Props> = ({
                 <button
                   key={index}
                   className="sidebarsub-btn-style hover:bg-neutral-500"
-                  // disabled={
-                  //   selectedCourseNo !== null &&
-                  //   selectedCourseNo !== course.courseNo
-                  // }
                   style={{
                     backgroundColor:
                       selectedCourseNo === course.courseNo ? "red" : "",
                   }}
-                  onClick={() => setSelectedCourseNo(course.courseNo || null)}
+                  onClick={() => {
+                    setSelectedCourseNo(course.courseNo || null);
+                    // handleSubFeedbackClick(
+                    //   course.courseName,
+                    //   course.courseNo,
+                    //   course.academicYear,
+                    //   course.semester,
+                    //   course.teachingMethodComments,
+                    //   course.assessmentComments,
+                    //   course.contentComments
+                    // );
+                  }}
                 >
                   {`${course.courseNo || ""} ${course.courseName || ""}`}
                 </button>
@@ -134,7 +141,7 @@ const SideBar: FC<Props> = ({
                     key={index}
                     className="sidebarsub-btn-style hover:bg-neutral-500 "
                     onClick={() =>
-                      onCourseBtnClick(
+                      handleSubFeedbackClick(
                         course.courseName,
                         course.courseNo,
                         course.academicYear,

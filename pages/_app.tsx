@@ -9,6 +9,8 @@ import {
   MantineProvider,
   TextInput,
 } from "@mantine/core";
+import { NextUIProvider } from "@nextui-org/react";
+
 const theme = createTheme({
   components: {
     FileInput: FileInput.extend({
@@ -29,7 +31,9 @@ const theme = createTheme({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <MantineProvider theme={theme}>
-      <Component {...pageProps} />;
+      <NextUIProvider>
+        <Component {...pageProps} />;
+      </NextUIProvider>
     </MantineProvider>
   );
 }

@@ -39,7 +39,6 @@ const Analyze: FC = () => {
 
   const [isSummarize, setIsSummarize] = useState<boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
-
   const toggleSummarize = () => {
     setIsSummarize((prevIsSummarize) => !prevIsSummarize);
   };
@@ -47,7 +46,7 @@ const Analyze: FC = () => {
     setIsDarkMode((prevIsDarkMode) => !prevIsDarkMode);
   };
 
-  const handleCourseBtnClick = (
+  const handleSubFeedbackClick = (
     name: string,
     no: number,
     year: number,
@@ -65,6 +64,8 @@ const Analyze: FC = () => {
     setAssessmentComments(amComments);
     setContentComments(cComments);
   };
+  const handleSubCourseClick = (name: string, no: number) => {};
+
   const [isSentimentView, setIsSentimentView] = useState(false);
   const handleSentimentView = () => {
     setIsSentimentView((prev) => !prev); // Toggle between true and false
@@ -138,7 +139,7 @@ const Analyze: FC = () => {
         <div className="flex w-2/12 h-full">
           <SideBar
             fetchedCourse={fetchedCourse}
-            onCourseBtnClick={handleCourseBtnClick}
+            handleSubFeedbackClick={handleSubFeedbackClick}
             fullName={fullName}
             cmuAccount={cmuAccount}
             isSummarize={isSummarize} // You're already passing this correctly
