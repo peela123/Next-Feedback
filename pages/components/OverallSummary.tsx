@@ -1,71 +1,271 @@
-import { FC } from "react";
-import { FetchedCourse, Comment } from "../../types/CommentType";
-
+import { FC, useEffect, useState } from "react";
+// import { BarChart } from "@mui/x-charts/BarChart";
 import { BarChart } from "@mantine/charts";
+import { Bar } from "recharts";
 
+export interface FetchedCourse {
+  courseName: string;
+  courseNo: number;
+  semester: string;
+  academicYear: number;
+  cmuAccount: string;
+  teachingMethodComments: Comment[];
+  assessmentComments: Comment[];
+  contentComments: Comment[];
+}
+
+export interface Comment {
+  text: string;
+  sentiment: string;
+  label: string;
+}
 interface Props {
   fetchedCourse: FetchedCourse[];
   courseNo: number | undefined;
 }
 
+interface CategoryData {
+  label: string;
+  positive: number;
+  negative: number;
+  neutral: number;
+}
+
 const OverallSummary: FC<Props> = ({ fetchedCourse, courseNo }) => {
-  // Filter to always get an array, even if it's empty on no match.
-  let matchedCourses = fetchedCourse.filter(
-    (course) => course.courseNo === courseNo
-  );
+  //filter fetchedCourse to match courseNo and sort with ascending order year and semester
+  let matchedCourses = fetchedCourse
+    .filter((course) => course.courseNo === courseNo)
+    .sort((a, b) => {
+      if (a.academicYear !== b.academicYear) {
+        return a.academicYear - b.academicYear;
+      }
+      return a.semester.localeCompare(b.semester);
+    });
 
-  // Sort matched courses by academicYear first, then by semester.
-  matchedCourses = matchedCourses.sort((a, b) => {
-    // Compare by academicYear first
-    if (a.academicYear !== b.academicYear) {
-      return a.academicYear - b.academicYear;
-    }
-    return a.semester.localeCompare(b.semester);
-  });
+  // const prepareData = (): CategoryData[][] => {
+  //   return matchedCourses.map((course): CategoryData[] => {
+  //     // Initialize counts
+  //     let teachingMethodCounts = { positive: 0, negative: 0, neutral: 0 };
+  //     let assessmentCounts = { positive: 0, negative: 0, neutral: 0 };
+  //     let contentCounts = { positive: 0, negative: 0, neutral: 0 };
 
-  const data = [
-    { month: "January", Smartphones: 1200, Laptops: 900, Tablets: 200 },
-    { month: "February", Smartphones: 1900, Laptops: 1200, Tablets: 400 },
-    { month: "March", Smartphones: 400, Laptops: 1000, Tablets: 200 },
-    { month: "April", Smartphones: 1000, Laptops: 200, Tablets: 800 },
-    { month: "May", Smartphones: 800, Laptops: 1400, Tablets: 1200 },
-    { month: "June", Smartphones: 750, Laptops: 600, Tablets: 1000 },
-  ];
+  //     // Count sentiments for teachingMethodComments
+  //     course.teachingMethodComments.forEach((comment) => {
+  //       if (comment.sentiment.toLowerCase() === "positive")
+  //         teachingMethodCounts.positive++;
+  //       else if (comment.sentiment.toLowerCase() === "negative")
+  //         teachingMethodCounts.negative++;
+  //       else if (comment.sentiment.toLowerCase() === "neutral")
+  //         teachingMethodCounts.neutral++;
+  //     });
 
+  //     // Count sentiments for assessmentComments
+  //     course.assessmentComments.forEach((comment) => {
+  //       if (comment.sentiment.toLowerCase() === "positive")
+  //         assessmentCounts.positive++;
+  //       else if (comment.sentiment.toLowerCase() === "negative")
+  //         assessmentCounts.negative++;
+  //       else if (comment.sentiment.toLowerCase() === "neutral")
+  //         assessmentCounts.neutral++;
+  //     });
+
+  //     // Count sentiments for contentComments
+  //     course.contentComments.forEach((comment) => {
+  //       if (comment.sentiment.toLowerCase() === "positive")
+  //         contentCounts.positive++;
+  //       else if (comment.sentiment.toLowerCase() === "negative")
+  //         contentCounts.negative++;
+  //       else if (comment.sentiment.toLowerCase() === "neutral")
+  //         contentCounts.neutral++;
+  //     });
+
+  //     // Return an array for each course with objects for each category
+  //     return [
+  //       {
+  //         label: "teachingMethod",
+  //         positive: teachingMethodCounts.positive,
+  //         negative: teachingMethodCounts.negative,
+  //         neutral: teachingMethodCounts.neutral,
+  //       },
+  //       {
+  //         label: "assessment",
+  //         positive: assessmentCounts.positive,
+  //         negative: assessmentCounts.negative,
+  //         neutral: assessmentCounts.neutral,
+  //       },
+  //       {
+  //         label: "content",
+  //         positive: contentCounts.positive,
+  //         negative: contentCounts.negative,
+  //         neutral: contentCounts.neutral,
+  //       },
+  //     ];
+  //   });
+  // };
+  const prepareData = (): any => {
+    return matchedCourses.map((course): CategoryData[] => {
+      // Initialize counts
+      let teachingMethodCounts = { positive: 0, negative: 0, neutral: 0 };
+      let assessmentCounts = { positive: 0, negative: 0, neutral: 0 };
+      let contentCounts = { positive: 0, negative: 0, neutral: 0 };
+
+      // Count sentiments for teachingMethodComments
+      course.teachingMethodComments.forEach((comment) => {
+        if (comment.sentiment.toLowerCase() === "positive")
+          teachingMethodCounts.positive++;
+        else if (comment.sentiment.toLowerCase() === "negative")
+          teachingMethodCounts.negative++;
+        else if (comment.sentiment.toLowerCase() === "neutral")
+          teachingMethodCounts.neutral++;
+      });
+
+      // Count sentiments for assessmentComments
+      course.assessmentComments.forEach((comment) => {
+        if (comment.sentiment.toLowerCase() === "positive")
+          assessmentCounts.positive++;
+        else if (comment.sentiment.toLowerCase() === "negative")
+          assessmentCounts.negative++;
+        else if (comment.sentiment.toLowerCase() === "neutral")
+          assessmentCounts.neutral++;
+      });
+
+      // Count sentiments for contentComments
+      course.contentComments.forEach((comment) => {
+        if (comment.sentiment.toLowerCase() === "positive")
+          contentCounts.positive++;
+        else if (comment.sentiment.toLowerCase() === "negative")
+          contentCounts.negative++;
+        else if (comment.sentiment.toLowerCase() === "neutral")
+          contentCounts.neutral++;
+      });
+
+      // Return an array for each course with objects for each category
+      return [
+        {
+          label: "teachingMethod",
+          positive: teachingMethodCounts.positive,
+          negative: teachingMethodCounts.negative,
+          neutral: teachingMethodCounts.neutral,
+        },
+        {
+          label: "assessment",
+          positive: assessmentCounts.positive,
+          negative: assessmentCounts.negative,
+          neutral: assessmentCounts.neutral,
+        },
+        {
+          label: "content",
+          positive: contentCounts.positive,
+          negative: contentCounts.negative,
+          neutral: contentCounts.neutral,
+        },
+      ];
+    });
+  };
+
+  const dataForCharts = prepareData(); // Call the function to get the array of arrays
+
+  const getPrepareData = (course: FetchedCourse) => {
+    let teachingMethodCounts = { positive: 0, negative: 0, neutral: 0 };
+    let assessmentCounts = { positive: 0, negative: 0, neutral: 0 };
+    let contentCounts = { positive: 0, negative: 0, neutral: 0 };
+
+    // Count sentiments for teachingMethodComments
+    course.teachingMethodComments.forEach((comment) => {
+      if (comment.sentiment.toLowerCase() === "positive")
+        teachingMethodCounts.positive++;
+      else if (comment.sentiment.toLowerCase() === "negative")
+        teachingMethodCounts.negative++;
+      else if (comment.sentiment.toLowerCase() === "neutral")
+        teachingMethodCounts.neutral++;
+    });
+
+    // Count sentiments for assessmentComments
+    course.assessmentComments.forEach((comment) => {
+      if (comment.sentiment.toLowerCase() === "positive")
+        assessmentCounts.positive++;
+      else if (comment.sentiment.toLowerCase() === "negative")
+        assessmentCounts.negative++;
+      else if (comment.sentiment.toLowerCase() === "neutral")
+        assessmentCounts.neutral++;
+    });
+
+    // Count sentiments for contentComments
+    course.contentComments.forEach((comment) => {
+      if (comment.sentiment.toLowerCase() === "positive")
+        contentCounts.positive++;
+      else if (comment.sentiment.toLowerCase() === "negative")
+        contentCounts.negative++;
+      else if (comment.sentiment.toLowerCase() === "neutral")
+        contentCounts.neutral++;
+    });
+    return [
+      {
+        label: "teachingMethod",
+        positive: teachingMethodCounts.positive,
+        negative: teachingMethodCounts.negative,
+        neutral: teachingMethodCounts.neutral,
+      },
+      {
+        label: "assessment",
+        positive: assessmentCounts.positive,
+        negative: assessmentCounts.negative,
+        neutral: assessmentCounts.neutral,
+      },
+      {
+        label: "content",
+        positive: contentCounts.positive,
+        negative: contentCounts.negative,
+        neutral: contentCounts.neutral,
+      },
+    ];
+  };
+
+  // useEffect(() => {
+  //   console.log("Matched courses:", matchedCourses);
+  //   console.log("Prepared data:", dataForCharts);
+  // }, [matchedCourses, dataForCharts]); // Add dependencies to useEffect for correct update logging
   return (
     <section
-      style={{ backgroundColor: "#FDFDFD", width: "1200px", height: "50%" }}
-      className="flex flex-col border-2 border-black rounded"
+      style={{
+        backgroundColor: "#FDFDFD",
+        width: "1200px",
+        height: "48.5%",
+        boxSizing: "border-box",
+      }}
+      className="flex flex-col  rounded overflow-auto "
     >
-      <h1 className="summary-text-style mx-4 my-2 bg-red-200 w-fit">
-        Course Overall Summary(Label Summary with Sentiment Percentage)
+      <h1 className="summary-text-style mx-4 my-2  w-fit">
+        Course Overall Summary
       </h1>
-      <div className="bg-blue-100  flex flex-row grow">
-        {matchedCourses.length > 0 ? (
-          <BarChart
-            className="flex flex-col text-center grow bg-red-100"
-            h={"100%"}
-            w={500}
-            data={data}
-            dataKey="month"
-            type="stacked"
-            withLegend
-            tickLine="none"
-            legendProps={{ verticalAlign: "top" }}
-            series={[
-              {
-                name: "Smartphones",
-                label: "Smartphones sales",
-                color: "violet.6",
-              },
-              { name: "Laptops", label: "Laptops sales", color: "blue.6" },
-              { name: "Tablets", label: "Tablets sales", color: "teal.6" },
-            ]}
-          />
+      <div className="flex flex-row h-full">
+        {matchedCourses.length !== 0 ? (
+          <section className="flex flex-row ">
+            {matchedCourses.map((course: FetchedCourse, index: number) => (
+              <div className=" flex flex-col items-center justify-center border-r-2 border-black">
+                <BarChart
+                  data={getPrepareData(course)} // Wrap the data object in an array
+                  dataKey="label"
+                  type="stacked"
+                  style={{ minWidth: "400px" }}
+                  className="w-full h-full"
+                  series={[
+                    { name: "positive", color: "#34eb49" }, // Adjusted colors for better visibility
+                    { name: "negative", color: "#e83146" },
+                    { name: "neutral", color: "#868e96" },
+                  ]}
+                />
+                <p>
+                  ปีการศึกษา
+                  {course.academicYear} ภาคเรียนที่ {course.semester}
+                </p>
+              </div>
+            ))}
+          </section>
         ) : (
-          <div className="w-full flex justify-center items-center bg-red-400">
-            <p className="text-xl">No data available .</p>
-          </div>
+          <section className="w-full flex justify-center items-center ">
+            <p className="text-xl">No data available.</p>
+          </section>
         )}
       </div>
     </section>

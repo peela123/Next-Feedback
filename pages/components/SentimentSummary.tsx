@@ -28,21 +28,26 @@ const SentimentSummary: FC<Props> = ({ fetchedCourse, courseNo }) => {
 
   return (
     <section
-      style={{ backgroundColor: "#FDFDFD", width: "1200px", height: "50%" }}
-      className="flex flex-col border-2 border-black rounded"
+      style={{
+        backgroundColor: "#FDFDFD",
+        width: "1200px",
+        height: "48.5%",
+        borderWidth: "0px",
+      }}
+      className="flex flex-col"
     >
-      <p className="bg-red-400 w-max mx-4 my-2 summary-text-style">
+      <p className=" w-max mx-4 my-2 summary-text-style">
         Each Semester Sentiment Summary
       </p>
-      <div className="grow flex flex-row overflow-auto  bg-red-200">
+      <div className="grow flex flex-row overflow-auto">
         {matchedCourses.length > 0 ? (
           // Map through matchedCourses if there are any
           matchedCourses.map((course, index) => (
             <div
               key={index}
-              style={{
-                flexShrink: 0,
-              }}
+              // style={{
+              //   flexShrink: 0,
+              // }}
               className="flex flex-col h-full text-center"
             >
               <BarCharts
@@ -53,7 +58,7 @@ const SentimentSummary: FC<Props> = ({ fetchedCourse, courseNo }) => {
                 semester={course.semester}
               />
               <p className="grow-0">
-                ปี{course.academicYear}เทอม{course.semester}
+                ปีการศึกษา {course.academicYear} ภาคเรียนที่ {course.semester}
               </p>
             </div>
           ))

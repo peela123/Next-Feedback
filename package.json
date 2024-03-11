@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/styled": "^11.11.0",
     "@mantine/carousel": "^7.6.1",
     "@mantine/charts": "^7.6.1",
     "@mantine/code-highlight": "^7.6.1",
@@ -36,6 +37,7 @@
     "@types/node": "20.11.25",
     "@types/react": "18.2.64",
     "@types/react-dom": "18.2.21",
+    "apexcharts": "^3.47.0",
     "axios": "^1.6.7",
     "cookies-next": "^4.1.1",
     "dayjs": "^1.11.10",

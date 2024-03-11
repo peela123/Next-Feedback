@@ -2,13 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* .html,
+html,
 body {
-  height: 100%;
+  padding: 0;
   margin: 0;
-} */
-
-
+  box-sizing: border-box;
+}
 
 .sidebar-btn-style {
   background-color: #565656;

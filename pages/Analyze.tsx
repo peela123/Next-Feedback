@@ -9,6 +9,7 @@ import SideBar from "./components/SideBar";
 import BarCharts from "./components/BarCharts";
 import PieCharts from "./components/PieCharts";
 import { Label } from "recharts";
+import { FaSearchPlus } from "react-icons/fa";
 import OverallSummary from "./components/OverallSummary";
 import SentimentSummary from "./components/SentimentSummary";
 
@@ -74,9 +75,9 @@ const Analyze: FC = () => {
   const getColorForSentiment = (sentiment: string) => {
     switch (sentiment) {
       case "positive":
-        return "text-green-500"; // Green for positive
+        return "text-green-500 "; // Green for positive
       case "negative":
-        return "text-red-500"; // Red for negative
+        return "text-red-400 "; // Red for negative
       case "neutral":
         return "text-gray-500"; // Gray for neutral
       default:
@@ -157,21 +158,21 @@ const Analyze: FC = () => {
           {isSummarize ? (
             // summarize container
             <section
-              className="flex flex-col justify-between mt-6 ml-6 rounded-lg bg-red-400"
+              className="flex flex-col justify-between mt-6 ml-6 rounded"
               style={{
                 height: "93%",
                 width: "1200px",
-                // backgroundColor: "#fdfdfd",
+
                 backgroundColor: "#D9D9D9",
               }}
             >
               <div className="rounded-lg w-fit ml-6 my-4">
-                <p style={{ color: "#414141" }}>
+                <p style={{ color: "#414141" }} className="text-xl">
                   สถิติย้อนหลังกระบวนวิชา:{""}
                   {courseName === "" ? "ยังไม่ได้เลือกวิชา" : courseName}
                 </p>
               </div>
-              <div className="grow bg-red-400">
+              <div className="grow flex flex-col justify-between">
                 <OverallSummary
                   fetchedCourse={fetchedCourse}
                   courseNo={courseNo}
@@ -185,7 +186,7 @@ const Analyze: FC = () => {
           ) : (
             // feedback container
             <section
-              className="flex flex-col mt-6 ml-6 rounded-lg"
+              className="flex flex-col mt-6 ml-6 rounded"
               style={{
                 backgroundColor: "#D9D9D9",
 
@@ -193,14 +194,13 @@ const Analyze: FC = () => {
                 width: "1200px",
               }}
             >
-              <div className="rounded-lg w-fit ml-6 my-4">
+              <div className="rounded-lg  ml-6 my-4">
                 <p style={{ color: "#414141" }}>
                   ปีการศึกษา {academicYear} ภาคเรียนที่ {semester} กระบวนวิชา{" "}
-                  {courseName} isSummarize {isSummarize ? "True" : "False"}{" "}
-                  isDarkMode {isDarkMode ? "True" : "False"}
+                  {courseName}
                 </p>
 
-                <div className="flex flex-row gap-x-4 items-center">
+                <div className="flex flex-row gap-x-4 w-full justify-between items-center">
                   <h1 className="text-xl">
                     {`ความคิดเห็นทั้งหมด(${
                       (teachingMethodComments?.length ?? 0) +
@@ -210,9 +210,18 @@ const Analyze: FC = () => {
                   </h1>
                   <button
                     onClick={handleSentimentView}
-                    className="border-2 border-black px-2 rounded w-36 hover:bg-gray-400"
+                    className="gap-x-4 rounded mr-12 bg-gray-400 hover:bg-gray-300"
+                    style={{ width: "150px" }}
                   >
-                    {isSentimentView ? "default view" : "sentiment view"}
+                    {isSentimentView ? (
+                      "default view"
+                    ) : (
+                      // <img src="public\sen-btn.png" />
+                      <div className="flex flex-row justify-center items-center gap-x-2">
+                        <p>sentiment view</p>
+                        <FaSearchPlus />
+                      </div>
+                    )}
                   </button>
                 </div>
               </div>
@@ -236,7 +245,7 @@ const Analyze: FC = () => {
                               )
                             : "text-black"
                         }
-                      >{`comment: ${comment.text} sentiment: ${comment.sentiment} label: ${comment.label}`}</li>
+                      >{` ${comment.text}`}</li>
                     ))}
                   </ul>
                 </div>
@@ -256,7 +265,7 @@ const Analyze: FC = () => {
                                 )
                               : "text-black"
                           }
-                        >{`comment: ${comment.text} sentiment: ${comment.sentiment} label: ${comment.label}`}</li>
+                        >{` ${comment.text} `}</li>
                       )
                     )}
                   </ul>
@@ -278,7 +287,7 @@ const Analyze: FC = () => {
                                 )
                               : "text-black"
                           }
-                        >{`comment: ${comment.text} sentiment: ${comment.sentiment} label: ${comment.label}`}</li>
+                        >{` ${comment.text} `}</li>
                       )
                     )}
                   </ul>

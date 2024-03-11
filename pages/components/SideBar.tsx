@@ -100,7 +100,7 @@ const SideBar: FC<Props> = ({
                   className="sidebarsub-btn-style hover:bg-neutral-500"
                   style={{
                     backgroundColor:
-                      selectedCourseNo === course.courseNo ? "red" : "",
+                      selectedCourseNo === course.courseNo ? "#727877 " : "",
                   }}
                   onClick={() => {
                     setSelectedCourseNo(course.courseNo || null);

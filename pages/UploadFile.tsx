@@ -17,6 +17,9 @@ import { Input } from "@mantine/core";
 import { error } from "console";
 import { Loader } from "@mantine/core";
 import { FileInput } from "@mantine/core";
+import { Stepper, Button, Group } from "@mantine/core";
+import { Menu } from "@mantine/core";
+import { redirect } from "next/navigation";
 
 interface Field {
   value: string;
@@ -46,6 +49,12 @@ const UploadFile: FC = () => {
   const [studentId, setStudentId] = useState("");
   const [errorMessage, setErrorMessage] = useState("no error");
   const [responseMessage, setResponseMessage] = useState<string>("no error"); //message about upload file error
+
+  const [active, setActive] = useState(1);
+  const nextStep = () =>
+    setActive((current) => (current < 3 ? current + 1 : current));
+  const prevStep = () =>
+    setActive((current) => (current > 0 ? current - 1 : current));
 
   const semesters: Field[] = [
     { value: "1", label: "1" },
@@ -112,6 +121,7 @@ const UploadFile: FC = () => {
       }
 
       router.push("/Analyze");
+      // redirect("/Analyze");
     } catch (error) {
       console.error(error);
     }
@@ -200,16 +210,16 @@ const UploadFile: FC = () => {
   }, [file]);
 
   return (
-    <main className="flex flex-col h-screen bg-red-400">
+    <main className="flex flex-col h-screen">
       <Navbar fullName={fullName} cmuAccount={cmuAccount} />
       <div
-        className="grow flex flex-row justify-center items-center  bg-red-400"
+        className="grow flex flex-row justify-center items-center "
         // style={{ backgroundColor: "#FEF4F4" }}
-        style={{ backgroundColor: "#404040" }}
+        // style={{ backgroundColor: "#404040" }}
       >
         {/* box */}
         <div
-          className="flex flex-col items-center w-11/12 h-max border-2 border-black rounded bg-white"
+          className="flex flex-col items-center w-11/12 h-max border-2  bg-white"
           style={{ width: "94%", height: "90%" }}
         >
           <section className="flex flex-col text-center mt-6 gap-y-2">
@@ -217,23 +227,31 @@ const UploadFile: FC = () => {
             <p className="text-2xl">Make a quick summary!</p>
           </section>
           {/* file input section */}
-          <section className="flex flex-row gap-x-10 items-center">
+          <section className="flex flex-row gap-x-10 mt-12 items-center">
             <div className="gap-y-2 flex flex-col">
-              <p className="filelabel-container whitespace-nowrap border-black border-2">
+              <p
+                className="filelabel-container whitespace-nowrap"
+                style={{ borderColor: "gray", borderWidth: "0.5px" }}
+              >
                 {fileName}
               </p>
-              <ProgressBar />
+              {/* <ProgressBar /> */}
             </div>
             <input
               type="file"
               id="file-upload"
               // placeholder="no file chosen........"
-              style={{ display: "none" }}
+              style={{
+                display: "none",
+                backgroundColor: "red",
+                textAlign: "center",
+              }}
               onChange={handleFileChange}
             />
             <label
               htmlFor="file-upload"
               className="uploadfile-btn-style hover:bg-blue-400"
+              // style={{ backgroundColor: " EEEEEE" }}
               // aria-placeholder="no file.//"
             >
               <LuFileUp size={25} />
@@ -296,10 +314,10 @@ const UploadFile: FC = () => {
           <section className="flex flex-row justify-center items-center mt-8">
             {file === null ? (
               <button
-                className="border-2 border-black px-6 py-2 rounded bg-blue-400 hover:bg-blue-500"
+                className="border-2 border-black px-12 py-2 rounded bg-blue-400 hover:bg-blue-500"
                 onClick={handleUploadClick}
               >
-                view analyze
+                <p className="text-xl font-semibold">View Analyze</p>
               </button>
             ) : (
               <div className="flex items-center">
