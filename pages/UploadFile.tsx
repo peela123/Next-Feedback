@@ -5,8 +5,6 @@ import { WhoAmIResponse } from "./api/whoAmI";
 
 import readXlsxFile from "read-excel-file";
 
-import ProgressBar from "./components/ProgressBar";
-import NotificationBox from "./components/NotificationBox";
 // import { Switch } from "@mantine/core";
 import Navbar from "./components/Navbar";
 import { LuFileUp } from "react-icons/lu";
@@ -20,18 +18,6 @@ import { FileInput } from "@mantine/core";
 import { Stepper, Button, Group } from "@mantine/core";
 import { Menu } from "@mantine/core";
 import { redirect } from "next/navigation";
-
-interface Field {
-  value: string;
-  label: string;
-}
-
-const data = [
-  { name: "USA", value: 400, color: "indigo.6" },
-  { name: "India", value: 300, color: "yellow.6" },
-  { name: "Japan", value: 100, color: "teal.6" },
-  { name: "Other", value: 200, color: "gray.6" },
-];
 
 const UploadFile: FC = () => {
   const [semester, setSemester] = useState<string>("");
@@ -56,16 +42,13 @@ const UploadFile: FC = () => {
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
 
-  const semesters: Field[] = [
+  const semesters = [
     { value: "1", label: "1" },
     { value: "2", label: "2" },
     { value: "summer", label: "summer" },
   ];
 
   function signOut() {
-    //Call sign out api without caring what is the result
-    //It will fail only in case of client cannot connect to server
-    //This is left as an exercise for you. Good luck.
     axios.post("/api/signOut").finally(() => {
       router.push("/");
     });
@@ -121,13 +104,11 @@ const UploadFile: FC = () => {
       }
 
       router.push("/Analyze");
-      // redirect("/Analyze");
     } catch (error) {
       console.error(error);
     }
   };
 
-  //   auto fill selected file name
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
@@ -166,7 +147,7 @@ const UploadFile: FC = () => {
       });
   }, []);
 
-  //   auto fill input fields
+  // auto fill input fields
   useEffect(() => {
     let course = "";
     let number = "";
@@ -235,15 +216,12 @@ const UploadFile: FC = () => {
               >
                 {fileName}
               </p>
-              {/* <ProgressBar /> */}
             </div>
             <input
               type="file"
               id="file-upload"
-              // placeholder="no file chosen........"
               style={{
                 display: "none",
-                backgroundColor: "red",
                 textAlign: "center",
               }}
               onChange={handleFileChange}
@@ -252,7 +230,6 @@ const UploadFile: FC = () => {
               htmlFor="file-upload"
               className="uploadfile-btn-style hover:bg-blue-400"
               // style={{ backgroundColor: " EEEEEE" }}
-              // aria-placeholder="no file.//"
             >
               <LuFileUp size={25} />
               Choose File
@@ -330,7 +307,7 @@ const UploadFile: FC = () => {
                 {isLoading ? (
                   <Loader color="blue" size={27} className="ml-6" />
                 ) : (
-                  <div></div>
+                  <></>
                 )}
               </div>
             )}

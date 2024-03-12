@@ -7,7 +7,6 @@ import { WhoAmIResponse } from "./api/whoAmI";
 import Navbar from "./components/Navbar";
 import SideBar from "./components/SideBar";
 import BarCharts from "./components/BarCharts";
-import PieCharts from "./components/PieCharts";
 import { Label } from "recharts";
 import { FaSearchPlus } from "react-icons/fa";
 import OverallSummary from "./components/OverallSummary";
@@ -118,7 +117,7 @@ const Analyze: FC = () => {
   //retrive all course according to cmuAccount
   useEffect(() => {
     axios
-      .get(`http://127.0.0.1:5000/user_courses?cmuAccount=${cmuAccount}`)
+      .get(`http://127.0.0.1:5000/api/user_courses?cmuAccount=${cmuAccount}`)
       .then((res) => {
         //axios already parse JSON to javascript object
         setFetchedCourse(res.data);
@@ -174,13 +173,11 @@ const Analyze: FC = () => {
               </div>
               <div className="grow flex flex-col justify-between">
                 <OverallSummary
+                  cmuAccount={cmuAccount}
                   fetchedCourse={fetchedCourse}
                   courseNo={courseNo}
                 />
-                <SentimentSummary
-                  fetchedCourse={fetchedCourse}
-                  courseNo={courseNo}
-                />
+                <SentimentSummary cmuAccount={cmuAccount} courseNo={courseNo} />
               </div>
             </section>
           ) : (

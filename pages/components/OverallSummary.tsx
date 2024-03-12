@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from "react";
 // import { BarChart } from "@mui/x-charts/BarChart";
 import { BarChart } from "@mantine/charts";
 import { Bar } from "recharts";
+import axios from "axios";
 
 export interface FetchedCourse {
   courseName: string;
@@ -20,6 +21,7 @@ export interface Comment {
   label: string;
 }
 interface Props {
+  cmuAccount: string;
   fetchedCourse: FetchedCourse[];
   courseNo: number | undefined;
 }
@@ -31,7 +33,8 @@ interface CategoryData {
   neutral: number;
 }
 
-const OverallSummary: FC<Props> = ({ fetchedCourse, courseNo }) => {
+const OverallSummary: FC<Props> = ({ cmuAccount, fetchedCourse, courseNo }) => {
+  const [fetchedData, setFetchedData] = useState<FetchedCourse[]>([]);
   //filter fetchedCourse to match courseNo and sort with ascending order year and semester
   let matchedCourses = fetchedCourse
     .filter((course) => course.courseNo === courseNo)
@@ -42,68 +45,23 @@ const OverallSummary: FC<Props> = ({ fetchedCourse, courseNo }) => {
       return a.semester.localeCompare(b.semester);
     });
 
-  // const prepareData = (): CategoryData[][] => {
-  //   return matchedCourses.map((course): CategoryData[] => {
-  //     // Initialize counts
-  //     let teachingMethodCounts = { positive: 0, negative: 0, neutral: 0 };
-  //     let assessmentCounts = { positive: 0, negative: 0, neutral: 0 };
-  //     let contentCounts = { positive: 0, negative: 0, neutral: 0 };
+  // fetch course by courseNo and cmuAccount
+  useEffect(() => {
+    axios
+      .get(
+        `http://127.0.0.1:5000/api/user_course?cmuAccount=${cmuAccount}&courseNo=${courseNo}`
+      )
+      .then((res) => {
+        //axios already parse JSON to javascript object
+        setFetchedData(res.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+      });
+  }, [cmuAccount, courseNo]);
 
-  //     // Count sentiments for teachingMethodComments
-  //     course.teachingMethodComments.forEach((comment) => {
-  //       if (comment.sentiment.toLowerCase() === "positive")
-  //         teachingMethodCounts.positive++;
-  //       else if (comment.sentiment.toLowerCase() === "negative")
-  //         teachingMethodCounts.negative++;
-  //       else if (comment.sentiment.toLowerCase() === "neutral")
-  //         teachingMethodCounts.neutral++;
-  //     });
-
-  //     // Count sentiments for assessmentComments
-  //     course.assessmentComments.forEach((comment) => {
-  //       if (comment.sentiment.toLowerCase() === "positive")
-  //         assessmentCounts.positive++;
-  //       else if (comment.sentiment.toLowerCase() === "negative")
-  //         assessmentCounts.negative++;
-  //       else if (comment.sentiment.toLowerCase() === "neutral")
-  //         assessmentCounts.neutral++;
-  //     });
-
-  //     // Count sentiments for contentComments
-  //     course.contentComments.forEach((comment) => {
-  //       if (comment.sentiment.toLowerCase() === "positive")
-  //         contentCounts.positive++;
-  //       else if (comment.sentiment.toLowerCase() === "negative")
-  //         contentCounts.negative++;
-  //       else if (comment.sentiment.toLowerCase() === "neutral")
-  //         contentCounts.neutral++;
-  //     });
-
-  //     // Return an array for each course with objects for each category
-  //     return [
-  //       {
-  //         label: "teachingMethod",
-  //         positive: teachingMethodCounts.positive,
-  //         negative: teachingMethodCounts.negative,
-  //         neutral: teachingMethodCounts.neutral,
-  //       },
-  //       {
-  //         label: "assessment",
-  //         positive: assessmentCounts.positive,
-  //         negative: assessmentCounts.negative,
-  //         neutral: assessmentCounts.neutral,
-  //       },
-  //       {
-  //         label: "content",
-  //         positive: contentCounts.positive,
-  //         negative: contentCounts.negative,
-  //         neutral: contentCounts.neutral,
-  //       },
-  //     ];
-  //   });
-  // };
   const prepareData = (): any => {
-    return matchedCourses.map((course): CategoryData[] => {
+    return fetchedData.map((course): CategoryData[] => {
       // Initialize counts
       let teachingMethodCounts = { positive: 0, negative: 0, neutral: 0 };
       let assessmentCounts = { positive: 0, negative: 0, neutral: 0 };

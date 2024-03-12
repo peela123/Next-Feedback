@@ -13,6 +13,7 @@ import { BsArrowReturnLeft } from "react-icons/bs";
 import { IoChevronDownSharp } from "react-icons/io5";
 import { Select, Menu } from "@mantine/core";
 import { Button } from "@mantine/core";
+import { ScrollArea } from "@mantine/core";
 
 import { FetchedCourse, Comment } from "../../types/CommentType";
 
@@ -52,9 +53,15 @@ const SideBar: FC<Props> = ({
   }
 
   return (
-    <nav
-      className="flex flex-col overflow-auto"
-      style={{ width: "390px", backgroundColor: "#363636" }}
+    <ScrollArea
+      w={450}
+      type="scroll"
+      scrollbars="y"
+      offsetScrollbars
+      scrollbarSize={6}
+      scrollHideDelay={500}
+      style={{ backgroundColor: "#363636" }}
+      className="flex flex-col"
     >
       <section className="mx-1 text-white grow">
         {/* user info button*/}
@@ -196,7 +203,7 @@ const SideBar: FC<Props> = ({
           <p className="text-lg">Log Out</p>
         </Link>
       </section>
-    </nav>
+    </ScrollArea>
   );
 };
 

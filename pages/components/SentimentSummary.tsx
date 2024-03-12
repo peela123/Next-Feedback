@@ -1,30 +1,48 @@
 import { FC, useEffect, useState } from "react";
+import axios from "axios";
 import { FetchedCourse, Comment } from "../../types/CommentType";
 import BarCharts from "./BarCharts";
 interface Props {
-  fetchedCourse: FetchedCourse[];
+  // fetchedCourse: FetchedCourse[];
+  cmuAccount: string;
   courseNo: number | undefined;
 }
 
-const SentimentSummary: FC<Props> = ({ fetchedCourse, courseNo }) => {
-  // Filter to always get an array, even if it's empty on no match.
-  let matchedCourses = fetchedCourse.filter(
-    (course) => course.courseNo === courseNo
-  );
+const SentimentSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
+  const [fetchedData, setFetchedData] = useState<FetchedCourse[]>([]);
+
+  // // Filter to always get an array, even if it's empty on no match.
+  // let matchedCourses = fetchedCourse.filter(
+  //   (course) => course.courseNo === courseNo
+  // );
 
   // Sort matched courses by academicYear first, then by semester.
-  matchedCourses = matchedCourses.sort((a, b) => {
-    // Compare by academicYear first
-    if (a.academicYear !== b.academicYear) {
-      return a.academicYear - b.academicYear;
-    }
-    return a.semester.localeCompare(b.semester);
-  });
+  // let matchedCourses = fetchedData.sort((a, b) => {
+  //   // Compare by academicYear first
+  //   if (a.academicYear !== b.academicYear) {
+  //     return a.academicYear - b.academicYear;
+  //   }
+  //   return a.semester.localeCompare(b.semester);
+  // });
 
   // useEffect(() => {
   //   console.log("input courseno:", courseNo);
   //   console.log("matched course:", matchedCourses);
   // }, [courseNo]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `http://127.0.0.1:5000/api/user_course?cmuAccount=${cmuAccount}&courseNo=${courseNo}`
+      )
+      .then((res) => {
+        //axios already parse JSON to javascript object
+        setFetchedData(res.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+      });
+  }, [cmuAccount, courseNo]);
 
   return (
     <section
@@ -40,16 +58,10 @@ const SentimentSummary: FC<Props> = ({ fetchedCourse, courseNo }) => {
         Each Semester Sentiment Summary
       </p>
       <div className="grow flex flex-row overflow-auto">
-        {matchedCourses.length > 0 ? (
+        {fetchedData.length > 0 ? (
           // Map through matchedCourses if there are any
-          matchedCourses.map((course, index) => (
-            <div
-              key={index}
-              // style={{
-              //   flexShrink: 0,
-              // }}
-              className="flex flex-col h-full text-center"
-            >
+          fetchedData.map((course, index) => (
+            <div key={index} className="flex flex-col h-full text-center">
               <BarCharts
                 teachingMethodComments={course.teachingMethodComments}
                 assessmentComments={course.assessmentComments}

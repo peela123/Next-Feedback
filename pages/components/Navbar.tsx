@@ -16,7 +16,7 @@ const Navbar: FC<Props> = ({ fullName, cmuAccount }) => {
   return (
     <nav
       className="flex flex-row gap-x-4 justify-between items-center h-12"
-      style={{ backgroundColor: "#2f2626", height: "57px" }}
+      style={{ backgroundColor: "#2f2626", height: "62px" }}
     >
       <div className="flex flex-row items-center gap-x-4 ml-8">
         <Link href="/UploadFile" className="flex flex-row gap-x-5 items-center">
