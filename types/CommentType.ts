@@ -10,6 +10,6 @@ export interface FetchedCourse {
 }
 export interface Comment {
   text: string;
-  sentiment: string;
+  sentiment: "Positive" | "Negative" | "Neutral";
   label: string;
 }

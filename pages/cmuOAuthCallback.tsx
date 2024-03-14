@@ -14,8 +14,8 @@ export default function CMUOAuthCallback() {
     //So we'll check if "code" is ready before calling sign-in api
     if (!code) return;
 
-    console.log("query string:", router.query); // Log the query string for debugging
-    console.log("code:", code); // Log the "code" for debugging
+    // console.log("query string:", router.query); // Log the query string for debugging
+    // console.log("code:", code); // Log the "code" for debugging
 
     axios
       .post<SignInResponse>("/api/signIn", { authorizationCode: code })

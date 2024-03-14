@@ -36,12 +36,6 @@ const UploadFile: FC = () => {
   const [errorMessage, setErrorMessage] = useState("no error");
   const [responseMessage, setResponseMessage] = useState<string>("no error"); //message about upload file error
 
-  const [active, setActive] = useState(1);
-  const nextStep = () =>
-    setActive((current) => (current < 3 ? current + 1 : current));
-  const prevStep = () =>
-    setActive((current) => (current > 0 ? current - 1 : current));
-
   const semesters = [
     { value: "1", label: "1" },
     { value: "2", label: "2" },
@@ -91,7 +85,7 @@ const UploadFile: FC = () => {
         //make HTTP POST request to the backend with JSON data
         const response = await axios
           .post(
-            `http://127.0.0.1:5000/api/user_upload?courseName=${courseName}&courseNo=${parseInt(
+            `http://127.0.0.1:5000/api/user_upload?courseName=${courseName.trim()}&courseNo=${parseInt(
               courseNo,
               10
             )}&semester=${semester}&academicYear=${parseInt(academicYear, 10)}`,
@@ -195,12 +189,13 @@ const UploadFile: FC = () => {
       <Navbar fullName={fullName} cmuAccount={cmuAccount} />
       <div
         className="grow flex flex-row justify-center items-center "
+        // style={{ backgroundColor: "#1f2123" }}
         // style={{ backgroundColor: "#FEF4F4" }}
         // style={{ backgroundColor: "#404040" }}
       >
         {/* box */}
         <div
-          className="flex flex-col items-center w-11/12 h-max border-2  bg-white"
+          className="flex flex-col items-center w-11/12 h-max"
           style={{ width: "94%", height: "90%" }}
         >
           <section className="flex flex-col text-center mt-6 gap-y-2">

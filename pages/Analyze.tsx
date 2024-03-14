@@ -6,11 +6,11 @@ import { WhoAmIResponse } from "./api/whoAmI";
 
 import Navbar from "./components/Navbar";
 import SideBar from "./components/SideBar";
-import BarCharts from "./components/BarCharts";
+
 import { Label } from "recharts";
 import { FaSearchPlus } from "react-icons/fa";
 import OverallSummary from "./components/OverallSummary";
-import SentimentSummary from "./components/SentimentSummary";
+import ImproveSummary from "./components/ImproveSummary";
 
 import { FetchedCourse, Comment } from "../types/CommentType";
 
@@ -167,21 +167,17 @@ const Analyze: FC = () => {
             >
               <div className="rounded-lg w-fit ml-6 my-4">
                 <p style={{ color: "#414141" }} className="text-xl">
-                  สถิติย้อนหลังกระบวนวิชา:{""}
+                  กระบวนวิชา:{" "}
                   {courseName === "" ? "ยังไม่ได้เลือกวิชา" : courseName}
                 </p>
               </div>
               <div className="grow flex flex-col justify-between">
-                <OverallSummary
-                  cmuAccount={cmuAccount}
-                  fetchedCourse={fetchedCourse}
-                  courseNo={courseNo}
-                />
-                <SentimentSummary cmuAccount={cmuAccount} courseNo={courseNo} />
+                <ImproveSummary cmuAccount={cmuAccount} courseNo={courseNo} />
+                <OverallSummary cmuAccount={cmuAccount} courseNo={courseNo} />
               </div>
             </section>
           ) : (
-            // feedback container
+            // feedback box
             <section
               className="flex flex-col mt-6 ml-6 rounded"
               style={{
@@ -222,12 +218,12 @@ const Analyze: FC = () => {
                   </button>
                 </div>
               </div>
-              {/* feedback labels */}
+              {/* feedback container */}
               <div
                 className="overflow-auto rounded-lg pl-8 pt-2 w-full h-full"
                 style={{ backgroundColor: "#FDFDFD" }}
               >
-                <div>
+                <section>
                   <h1 className="summary-text-style mb-1">
                     Content ({contentComments?.length ?? 0})
                   </h1>
@@ -245,8 +241,8 @@ const Analyze: FC = () => {
                       >{` ${comment.text}`}</li>
                     ))}
                   </ul>
-                </div>
-                <div>
+                </section>
+                <section>
                   <h1 className="summary-text-style mb-1">
                     Assessment ({assessmentComments?.length ?? 0})
                   </h1>
@@ -266,9 +262,9 @@ const Analyze: FC = () => {
                       )
                     )}
                   </ul>
-                </div>
+                </section>
 
-                <div>
+                <section>
                   <h1 className="summary-text-style mb-1">
                     Teaching Method ({teachingMethodComments?.length ?? 0})
                   </h1>
@@ -288,7 +284,7 @@ const Analyze: FC = () => {
                       )
                     )}
                   </ul>
-                </div>
+                </section>
               </div>
             </section>
           )}

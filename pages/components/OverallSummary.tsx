@@ -1,49 +1,18 @@
 import { FC, useEffect, useState } from "react";
-// import { BarChart } from "@mui/x-charts/BarChart";
-import { BarChart } from "@mantine/charts";
-import { Bar } from "recharts";
+import { FetchedCourse, Comment } from "../../types/CommentType";
+
 import axios from "axios";
 
-export interface FetchedCourse {
-  courseName: string;
-  courseNo: number;
-  semester: string;
-  academicYear: number;
-  cmuAccount: string;
-  teachingMethodComments: Comment[];
-  assessmentComments: Comment[];
-  contentComments: Comment[];
-}
+// import { BarChart } from "@mantine/charts";
+import { BarChart } from "@mui/x-charts/BarChart";
 
-export interface Comment {
-  text: string;
-  sentiment: string;
-  label: string;
-}
 interface Props {
   cmuAccount: string;
-  fetchedCourse: FetchedCourse[];
   courseNo: number | undefined;
 }
 
-interface CategoryData {
-  label: string;
-  positive: number;
-  negative: number;
-  neutral: number;
-}
-
-const OverallSummary: FC<Props> = ({ cmuAccount, fetchedCourse, courseNo }) => {
+const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
   const [fetchedData, setFetchedData] = useState<FetchedCourse[]>([]);
-  //filter fetchedCourse to match courseNo and sort with ascending order year and semester
-  let matchedCourses = fetchedCourse
-    .filter((course) => course.courseNo === courseNo)
-    .sort((a, b) => {
-      if (a.academicYear !== b.academicYear) {
-        return a.academicYear - b.academicYear;
-      }
-      return a.semester.localeCompare(b.semester);
-    });
 
   // fetch course by courseNo and cmuAccount
   useEffect(() => {
@@ -60,144 +29,93 @@ const OverallSummary: FC<Props> = ({ cmuAccount, fetchedCourse, courseNo }) => {
       });
   }, [cmuAccount, courseNo]);
 
-  const prepareData = (): any => {
-    return fetchedData.map((course): CategoryData[] => {
-      // Initialize counts
-      let teachingMethodCounts = { positive: 0, negative: 0, neutral: 0 };
-      let assessmentCounts = { positive: 0, negative: 0, neutral: 0 };
-      let contentCounts = { positive: 0, negative: 0, neutral: 0 };
+  const data = [
+    { month: "January", Smartphones: 1200, Laptops: 900, Tablets: 200 },
+    { month: "February", Smartphones: 1900, Laptops: 1200, Tablets: 400 },
+    { month: "March", Smartphones: 400, Laptops: 1000, Tablets: 200 },
+    { month: "April", Smartphones: 1000, Laptops: 200, Tablets: 800 },
+    { month: "May", Smartphones: 800, Laptops: 1400, Tablets: 1200 },
+    { month: "June", Smartphones: 750, Laptops: 600, Tablets: 1000 },
+  ];
 
-      // Count sentiments for teachingMethodComments
-      course.teachingMethodComments.forEach((comment) => {
-        if (comment.sentiment.toLowerCase() === "positive")
-          teachingMethodCounts.positive++;
-        else if (comment.sentiment.toLowerCase() === "negative")
-          teachingMethodCounts.negative++;
-        else if (comment.sentiment.toLowerCase() === "neutral")
-          teachingMethodCounts.neutral++;
-      });
+  const coursePrepare = (course: FetchedCourse) => {
+    const tmLength = course.teachingMethodComments.length;
+    const amLength = course.assessmentComments.length;
+    const cLength = course.contentComments.length;
 
-      // Count sentiments for assessmentComments
-      course.assessmentComments.forEach((comment) => {
-        if (comment.sentiment.toLowerCase() === "positive")
-          assessmentCounts.positive++;
-        else if (comment.sentiment.toLowerCase() === "negative")
-          assessmentCounts.negative++;
-        else if (comment.sentiment.toLowerCase() === "neutral")
-          assessmentCounts.neutral++;
-      });
+    let tmPos = 0,
+      tmNeg = 0,
+      tmNeu = 0;
 
-      // Count sentiments for contentComments
-      course.contentComments.forEach((comment) => {
-        if (comment.sentiment.toLowerCase() === "positive")
-          contentCounts.positive++;
-        else if (comment.sentiment.toLowerCase() === "negative")
-          contentCounts.negative++;
-        else if (comment.sentiment.toLowerCase() === "neutral")
-          contentCounts.neutral++;
-      });
+    let amPos = 0,
+      amNeg = 0,
+      amNeu = 0;
 
-      // Return an array for each course with objects for each category
-      return [
-        {
-          label: "teachingMethod",
-          positive: teachingMethodCounts.positive,
-          negative: teachingMethodCounts.negative,
-          neutral: teachingMethodCounts.neutral,
-        },
-        {
-          label: "assessment",
-          positive: assessmentCounts.positive,
-          negative: assessmentCounts.negative,
-          neutral: assessmentCounts.neutral,
-        },
-        {
-          label: "content",
-          positive: contentCounts.positive,
-          negative: contentCounts.negative,
-          neutral: contentCounts.neutral,
-        },
-      ];
-    });
-  };
+    let cPost = 0,
+      cNeg = 0,
+      cNeu = 0;
 
-  const dataForCharts = prepareData(); // Call the function to get the array of arrays
-
-  const getPrepareData = (course: FetchedCourse) => {
-    let teachingMethodCounts = { positive: 0, negative: 0, neutral: 0 };
-    let assessmentCounts = { positive: 0, negative: 0, neutral: 0 };
-    let contentCounts = { positive: 0, negative: 0, neutral: 0 };
-
-    // Count sentiments for teachingMethodComments
     course.teachingMethodComments.forEach((comment) => {
-      if (comment.sentiment.toLowerCase() === "positive")
-        teachingMethodCounts.positive++;
-      else if (comment.sentiment.toLowerCase() === "negative")
-        teachingMethodCounts.negative++;
-      else if (comment.sentiment.toLowerCase() === "neutral")
-        teachingMethodCounts.neutral++;
+      switch (comment.sentiment) {
+        case "Positive":
+          tmPos++;
+        case "Negative":
+          tmNeg++;
+        case "Neutral":
+          tmNeu++;
+      }
     });
 
-    // Count sentiments for assessmentComments
     course.assessmentComments.forEach((comment) => {
-      if (comment.sentiment.toLowerCase() === "positive")
-        assessmentCounts.positive++;
-      else if (comment.sentiment.toLowerCase() === "negative")
-        assessmentCounts.negative++;
-      else if (comment.sentiment.toLowerCase() === "neutral")
-        assessmentCounts.neutral++;
+      switch (comment.sentiment) {
+        case "Positive":
+          tmPos++;
+        case "Negative":
+          tmNeg++;
+        case "Neutral":
+          tmNeu++;
+      }
     });
 
-    // Count sentiments for contentComments
     course.contentComments.forEach((comment) => {
-      if (comment.sentiment.toLowerCase() === "positive")
-        contentCounts.positive++;
-      else if (comment.sentiment.toLowerCase() === "negative")
-        contentCounts.negative++;
-      else if (comment.sentiment.toLowerCase() === "neutral")
-        contentCounts.neutral++;
+      switch (comment.sentiment) {
+        case "Positive":
+          tmPos++;
+        case "Negative":
+          tmNeg++;
+        case "Neutral":
+          tmNeu++;
+      }
     });
-    return [
-      {
-        label: "teachingMethod",
-        positive: teachingMethodCounts.positive,
-        negative: teachingMethodCounts.negative,
-        neutral: teachingMethodCounts.neutral,
-      },
-      {
-        label: "assessment",
-        positive: assessmentCounts.positive,
-        negative: assessmentCounts.negative,
-        neutral: assessmentCounts.neutral,
-      },
-      {
-        label: "content",
-        positive: contentCounts.positive,
-        negative: contentCounts.negative,
-        neutral: contentCounts.neutral,
-      },
-    ];
   };
 
-  // useEffect(() => {
-  //   console.log("Matched courses:", matchedCourses);
-  //   console.log("Prepared data:", dataForCharts);
-  // }, [matchedCourses, dataForCharts]); // Add dependencies to useEffect for correct update logging
   return (
     <section
       style={{
-        backgroundColor: "#FDFDFD",
+        // backgroundColor: "#FDFDFD",
+        backgroundColor: "#363636",
+        color: "#9d9d9d",
         width: "1200px",
         height: "48.5%",
         boxSizing: "border-box",
       }}
-      className="flex flex-col  rounded overflow-auto "
+      className="flex flex-col rounded overflow-auto "
     >
-      <h1 className="summary-text-style mx-4 my-2  w-fit">
-        Course Overall Summary
-      </h1>
-      <div className="flex flex-row h-full">
-        {matchedCourses.length !== 0 ? (
+      <h1 className=" mx-auto font-semibold">Course Overall Summary</h1>
+      <div className="flex flex-row grow bg-red-400">
+        <BarChart
+          // style={{ width: "100%", height: "100%" }}
+          series={[
+            { data: [3, 4, 1], stack: "A" }, //label teachingMethod with 3 semester
+            { data: [4, 3, 1], stack: "A" }
+            // { data: [4, 2, 5, 4, 1], stack: "B" },
+            { data: [2, 8, 1], stack: "B" },
+            { data: [10, 6, 5], stack: "C" },
+          ]}
+          // width={600}
+          height={280}
+        />
+        {/* {matchedCourses.length !== 0 ? (
           <section className="flex flex-row ">
             {matchedCourses.map((course: FetchedCourse, index: number) => (
               <div className=" flex flex-col items-center justify-center border-r-2 border-black">
@@ -224,7 +142,7 @@ const OverallSummary: FC<Props> = ({ cmuAccount, fetchedCourse, courseNo }) => {
           <section className="w-full flex justify-center items-center ">
             <p className="text-xl">No data available.</p>
           </section>
-        )}
+        )} */}
       </div>
     </section>
   );

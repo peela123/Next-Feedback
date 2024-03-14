@@ -159,7 +159,11 @@ const SideBar: FC<Props> = ({
                       )
                     }
                   >
-                    {`Year ${course.academicYear} Term ${course.semester}`}
+                    {`Year ${course.academicYear} Term ${course.semester}(${
+                      course.teachingMethodComments.length +
+                      course.assessmentComments.length +
+                      course.contentComments.length
+                    })`}
                   </button>
                 ))}
           </div>
