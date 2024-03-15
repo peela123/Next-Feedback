@@ -83,7 +83,7 @@ const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
       countSentiment(course.contentComments, "Neu"),
   }));
 
-  console.log("prepare data:", prepareData);
+  // console.log("prepare data:", prepareData);
 
   // fetch course by courseNo and cmuAccount
   useEffect(() => {
@@ -103,7 +103,7 @@ const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
 
   return (
     <section
-      className="border-2 border-black rounded flex flex-col"
+      className=" rounded flex flex-col"
       style={{
         height: "48%",
         width: "100%",
@@ -111,7 +111,9 @@ const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
         color: "#9d9d9d",
       }}
     >
-      <h1 className="mx-auto font-semibold">Historical Statistic</h1>
+      <h1 className="mx-auto font-semibold text-gray-300">
+        Historical Statistic
+      </h1>
       <div className="grow flex flex-row ">
         {fetchedData.length > 0 ? (
           <AreaChart
@@ -122,7 +124,7 @@ const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
             series={[
               { name: "Positive", color: "lime" },
               { name: "Negative", color: "red" },
-              { name: "Neutral", color: "cyan" },
+              { name: "Neutral", color: "#808080" },
             ]}
             curveType="linear"
           />

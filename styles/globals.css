@@ -13,7 +13,8 @@ body {
   background-color: #565656;
   /* background-color: whitesmoke; */
   border-radius: 5px;
-  height: 48px;
+  height: 43px;
+  min-width: "100px";
   width: 100%;
   font-size: 19px;
   font-weight: 500;

@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 
@@ -9,8 +9,14 @@ import { CgProfile } from "react-icons/cg";
 import { Menu } from "@mantine/core";
 import { VscSignOut } from "react-icons/vsc";
 
-const UserInfoBtn: FC = () => {
+interface Props {
+  haveDropDown: boolean;
+}
+
+const UserInfoBtn: FC<Props> = ({ haveDropDown }) => {
   const router = useRouter();
+
+  // const [haveDropDown,setHaveDropDown] = useState<boolean>(false)
 
   function signOut() {
     //Call sign out api without caring what is the result
@@ -40,34 +46,39 @@ const UserInfoBtn: FC = () => {
           // color: "red",
           borderColor: "gray",
           borderWidth: "1px",
+          borderRadius: "3px",
         }}
       >
         <Menu.Item
           leftSection={<CgProfile style={{ width: "14px", height: "14px" }} />}
-          color="rgba(196, 179, 179, 1)"
+          // color="rgba(196, 179, 179, 1)"
+
+          color="white"
         >
           profile
         </Menu.Item>
         <Menu.Item
           leftSection={<GoGraph style={{ width: "14px", height: "14px" }} />}
           onClick={() => router.push("/Analyze")}
-          color="rgba(196, 179, 179, 1)"
+          // color="rgba(196, 179, 179, 1)"
+          color="white"
         >
           analyze
         </Menu.Item>
-
+        {/* 
         <Menu.Item
           leftSection={<IconSearch style={{ width: "14px", height: "14px" }} />}
           color="rgba(196, 179, 179, 1)"
           // disabled
         >
           Search
-        </Menu.Item>
+        </Menu.Item> */}
 
         <Menu.Item
           leftSection={<VscSignOut style={{ width: "14px", height: "14px" }} />}
           onClick={signOut}
-          color="rgba(196, 179, 179, 1)"
+          // color="rgba(196, 179, 179, 1)"
+          color="white"
         >
           sign out
         </Menu.Item>

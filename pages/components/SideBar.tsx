@@ -54,38 +54,40 @@ const SideBar: FC<Props> = ({
 
   return (
     <ScrollArea
-      w={450}
+      w={445}
       type="scroll"
       scrollbars="y"
-      offsetScrollbars
       scrollbarSize={6}
       scrollHideDelay={500}
       style={{ backgroundColor: "#363636" }}
       className="flex flex-col"
     >
-      <section className="mx-1 text-white grow">
+      <section className="flex flex-col justify-center items-center text-white grow">
         {/* user info button*/}
-        <section className="flex flex-row">
-          <UserInfoBtn />
+        <section className="my-2 flex flex-row items-center justify-center ">
+          <UserInfoBtn haveDropDown={false} />
           <div className="flex flex-col pl-4">
-            <p>{fullName}</p>
-            <p>{cmuAccount}</p>
+            <p className="text-white text-sm">{fullName}</p>
+            <p className="text-white text-sm">{cmuAccount}</p>
           </div>
         </section>
 
         {/* line break */}
         <hr
           style={{
-            border: "none",
-            height: "2px",
-            backgroundColor: "#824B4B",
+            // border: "none",
+            // height: "2px",
+            // backgroundColor: "#824B4B",
             marginTop: "32px",
             marginBottom: "32px",
+            borderWidth: "1px",
+            width: "95%",
+            borderColor: "#824B4B",
           }}
         ></hr>
 
         {/* all menu */}
-        <section className="flex flex-col mt-3 gap-y-2">
+        <section className="flex flex-col gap-y-2 w-11/12">
           {/* course section*/}
           <div className="flex flex-col gap-y-2">
             {/* course button */}
@@ -111,15 +113,6 @@ const SideBar: FC<Props> = ({
                   }}
                   onClick={() => {
                     setSelectedCourseNo(course.courseNo || null);
-                    // handleSubFeedbackClick(
-                    //   course.courseName,
-                    //   course.courseNo,
-                    //   course.academicYear,
-                    //   course.semester,
-                    //   course.teachingMethodComments,
-                    //   course.assessmentComments,
-                    //   course.contentComments
-                    // );
                   }}
                 >
                   {`${course.courseNo || ""} ${course.courseName || ""}`}
@@ -190,7 +183,7 @@ const SideBar: FC<Props> = ({
           {/* add feedback section */}
           <Link
             href="/UploadFile"
-            className="bg-lime-700 hover:bg-lime-600 py-2 flex flex-row justify-center items-center"
+            className="bg-lime-600 hover:bg-lime-700 py-2 flex flex-row justify-center items-center rounded-sm"
           >
             <IoMdAddCircleOutline size={30} />
             <p className="pl-3">Add Feedback</p>
@@ -200,7 +193,7 @@ const SideBar: FC<Props> = ({
         {/* logout */}
         <Link
           href="/"
-          className="flex flex-row justify-evenly items-center my-10 rounded-2xl h-9 bg-slate-600 hover:bg-red-400"
+          className="flex flex-row justify-evenly w-11/12 items-center my-10 rounded-2xl h-9 bg-slate-600 hover:bg-red-400"
           onClick={signOut}
         >
           <BsArrowReturnLeft size={32} color={"red"} />

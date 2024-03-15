@@ -152,7 +152,7 @@ const Analyze: FC = () => {
         <div
           className="flex flex-col h-full grow w-10/12"
           // style={{ backgroundColor: "#7C6B6B" }}
-          style={{ backgroundColor: isDarkMode ? "#292929" : "#EFEFEF" }}
+          style={{ backgroundColor: isDarkMode ? "#EFEFEF" : "#292929" }}
         >
           {isSummarize ? (
             // summarize container
@@ -162,11 +162,13 @@ const Analyze: FC = () => {
                 height: "93%",
                 width: "1200px",
 
-                backgroundColor: "#D9D9D9",
+                // backgroundColor: "#D9D9D9",
+                backgroundColor: "#363936",
               }}
             >
               <div className="rounded-lg w-fit ml-6 my-4">
-                <p style={{ color: "#414141" }} className="text-xl">
+                {/* <p style={{ color: "#414141" }} className="text-xl "> */}
+                <p className="text-xl text-white">
                   กระบวนวิชา:{" "}
                   {courseName === "" ? "ยังไม่ได้เลือกวิชา" : courseName}
                 </p>
