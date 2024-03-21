@@ -5,10 +5,10 @@ import { WhoAmIResponse } from "../api/whoAmI";
 import Link from "next/link";
 
 import UserInfoBtn from "./UserInfoBtn";
+import AddFeedbackBtn from "./AddFeedbackBtn";
 import { MdOutlineSubject, MdOutlineDarkMode } from "react-icons/md";
 import { BsDatabase } from "react-icons/bs";
 import { GrNotes } from "react-icons/gr";
-import { IoMdAddCircleOutline } from "react-icons/io";
 import { BsArrowReturnLeft } from "react-icons/bs";
 import { IoChevronDownSharp } from "react-icons/io5";
 import { Select, Menu } from "@mantine/core";
@@ -26,7 +26,8 @@ interface Props {
     semester: string,
     teachingMethodComments: Comment[],
     assessmentComments: Comment[],
-    contentComments: Comment[]
+    contentComments: Comment[],
+    responseCount: number
   ) => void;
   fullName: string;
   cmuAccount: string;
@@ -54,7 +55,7 @@ const SideBar: FC<Props> = ({
 
   return (
     <ScrollArea
-      w={445}
+      w={430}
       type="scroll"
       scrollbars="y"
       scrollbarSize={6}
@@ -62,7 +63,7 @@ const SideBar: FC<Props> = ({
       style={{ backgroundColor: "#363636" }}
       className="flex flex-col"
     >
-      <section className="flex flex-col justify-center items-center text-white grow">
+      <div className="flex flex-col justify-center items-center text-white grow">
         {/* user info button*/}
         <section className="my-2 flex flex-row items-center justify-center ">
           <UserInfoBtn haveDropDown={false} />
@@ -87,9 +88,9 @@ const SideBar: FC<Props> = ({
         ></hr>
 
         {/* all menu */}
-        <section className="flex flex-col gap-y-2 w-11/12">
+        <div className="flex flex-col gap-y-2 w-11/12">
           {/* course section*/}
-          <div className="flex flex-col gap-y-2">
+          <section className="flex flex-col gap-y-2">
             {/* course button */}
             <button className="sidebar-btn-style flex flex-row justify-center items-center hover:bg-neutral-500 transition-colors duration-150">
               <GrNotes size={25} color={"white"} />
@@ -118,10 +119,10 @@ const SideBar: FC<Props> = ({
                   {`${course.courseNo || ""} ${course.courseName || ""}`}
                 </button>
               ))}
-          </div>
+          </section>
 
           {/* feedback section*/}
-          <div className="flex flex-col gap-y-2 mt-4 overflow-auto">
+          <section className="flex flex-col gap-y-2 mt-4 overflow-auto">
             {/* feedback button */}
             <button className="sidebar-btn-style flex flex-row justify-center items-center border-2 border-transparent hover:bg-stone-500 transition-colors duration-150">
               <BsDatabase size={30} />
@@ -148,7 +149,8 @@ const SideBar: FC<Props> = ({
                         course.semester,
                         course.teachingMethodComments,
                         course.assessmentComments,
-                        course.contentComments
+                        course.contentComments,
+                        course.responseCount
                       )
                     }
                   >
@@ -159,10 +161,10 @@ const SideBar: FC<Props> = ({
                     })`}
                   </button>
                 ))}
-          </div>
+          </section>
 
           {/* sumarize section*/}
-          <div className="flex flex-col gap-y-2">
+          <section className="flex flex-col gap-y-2">
             {/* summarize button */}
             <button
               className="flex flex-row justify-center items-center mt-4 sidebar-btn-style hover:bg-neutral-500"
@@ -171,7 +173,7 @@ const SideBar: FC<Props> = ({
               <MdOutlineSubject size={30} />
               <p className="pl-3">Summarize</p>
             </button>
-          </div>
+          </section>
           {/* dark mode section */}
           <button
             onClick={toggleDarkMode}
@@ -180,15 +182,10 @@ const SideBar: FC<Props> = ({
             <MdOutlineDarkMode size={30} />
             <p className="pl-3">Dark Mode</p>
           </button>
+
           {/* add feedback section */}
-          <Link
-            href="/UploadFile"
-            className="bg-lime-600 hover:bg-lime-700 py-2 flex flex-row justify-center items-center rounded-sm"
-          >
-            <IoMdAddCircleOutline size={30} />
-            <p className="pl-3">Add Feedback</p>
-          </Link>
-        </section>
+          <AddFeedbackBtn />
+        </div>
 
         {/* logout */}
         <Link
@@ -199,7 +196,7 @@ const SideBar: FC<Props> = ({
           <BsArrowReturnLeft size={32} color={"red"} />
           <p className="text-lg">Log Out</p>
         </Link>
-      </section>
+      </div>
     </ScrollArea>
   );
 };

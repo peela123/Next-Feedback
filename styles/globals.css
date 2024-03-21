@@ -55,24 +55,17 @@ body {
 }
 
 .uploadfile-btn-style {
-  border: solid black 2px;
-  border-radius: 5px;
-
   font-family: Inter;
   font-size: 21px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  display: flex;
-  flex-direction: row;
   width: 183px;
-  height: 43px;
-  flex-shrink: 0;
-  background: #727CF5;
-  justify-content: space-evenly;
-  align-items: center;
-  stroke-width: 2px;
-  stroke: #000;
+  height: 35px;
+}
+
+.uploadfile-btn-style:hover {
+  background: "red";
 }
 
 .login-container-style {

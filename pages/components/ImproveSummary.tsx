@@ -68,7 +68,7 @@ const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
     return 0;
   };
   const prepareData: Data[] = fetchedData.map((course) => ({
-    semesterNYear: `year${course.academicYear}semester${course.semester}`,
+    semesterNYear: `ปี${course.academicYear}${course.semester}`,
     Positive:
       countSentiment(course.teachingMethodComments, "Pos") +
       countSentiment(course.assessmentComments, "Pos") +

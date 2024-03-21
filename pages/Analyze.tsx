@@ -30,6 +30,7 @@ const Analyze: FC = () => {
   const [contentComments, setContentComments] = useState<Comment[] | null>(
     null
   );
+  const [responseCount, setResponseCount] = useState<number>(0);
 
   const router = useRouter();
   const [fullName, setFullName] = useState("");
@@ -53,7 +54,8 @@ const Analyze: FC = () => {
     term: string,
     tmComments: Comment[],
     amComments: Comment[],
-    cComments: Comment[]
+    cComments: Comment[],
+    responseCount: number
   ) => {
     setCourseName(name);
     setCourseNo(no);
@@ -63,6 +65,7 @@ const Analyze: FC = () => {
     setTeachingMethodComments(tmComments);
     setAssessmentComments(amComments);
     setContentComments(cComments);
+    setResponseCount(responseCount);
   };
   const handleSubCourseClick = (name: string, no: number) => {};
 
@@ -127,10 +130,6 @@ const Analyze: FC = () => {
       });
   }, [cmuAccount]);
 
-  // useEffect(() => {
-  //   console.log("courseName", courseName);
-  // }, [courseName]);
-
   return (
     <main className="bg-cyan-400 h-screen">
       {/* main container */}
@@ -161,8 +160,6 @@ const Analyze: FC = () => {
               style={{
                 height: "93%",
                 width: "1200px",
-
-                // backgroundColor: "#D9D9D9",
                 backgroundColor: "#363936",
               }}
             >
@@ -196,12 +193,15 @@ const Analyze: FC = () => {
                 </p>
 
                 <div className="flex flex-row gap-x-4 w-full justify-between items-center">
-                  <h1 className="text-xl">
+                  {/* <h1 className="text-xl">
                     {`ความคิดเห็นทั้งหมด(${
                       (teachingMethodComments?.length ?? 0) +
                       (assessmentComments?.length ?? 0) +
                       (contentComments?.length ?? 0)
                     })`}
+                  </h1> */}
+                  <h1 className="text-xl">
+                    {`ความคิดเห็นทั้งหมด(${responseCount})`}
                   </h1>
                   <button
                     onClick={handleSentimentView}

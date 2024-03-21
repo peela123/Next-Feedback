@@ -63,12 +63,19 @@ const UploadFile: FC = () => {
         // read excel file
         const excelData = await readXlsxFile(file);
 
-        //map excel row data to array
-        const comments = excelData.map((row) => row[0]);
+        // map excel row column[0] to array
+        const comments = excelData
+          .filter((row) => row[0] !== null)
+          .map((row) => {
+            return String(row[0]).trim();
+          });
 
+        console.log("comments:", comments);
+        console.log("excel data length:", excelData.length);
         //prepare document to send to the backend
         const requestData = {
           comments: comments,
+          responseCount: excelData.length,
           cmuAccount: cmuAccount,
         };
 
@@ -82,7 +89,7 @@ const UploadFile: FC = () => {
 
         if (cmuAccount === "") signOut();
 
-        //make HTTP POST request to the backend with JSON data
+        // make HTTP POST request to the backend with JSON data
         const response = await axios
           .post(
             `http://127.0.0.1:5000/api/user_upload?courseName=${courseName.trim()}&courseNo=${parseInt(
@@ -173,8 +180,8 @@ const UploadFile: FC = () => {
 
       // Debugging logs
       console.log("file name:", file?.name);
-      console.log("number:", number);
-      console.log("course:", course);
+      console.log("course number:", number);
+      console.log("course name:", course);
       console.log("year:", year);
     }
 
@@ -203,32 +210,34 @@ const UploadFile: FC = () => {
             <p className="text-2xl">Make a quick summary!</p>
           </section>
           {/* file input section */}
-          <section className="flex flex-row gap-x-10 mt-12 items-center">
-            <div className="gap-y-2 flex flex-col">
-              <p
-                className="filelabel-container whitespace-nowrap"
-                style={{ borderColor: "gray", borderWidth: "0.5px" }}
+          <section className="flex flex-row mt-12 items-center">
+            <div>
+              <label
+                htmlFor="file-upload"
+                className="uploadfile-btn-style flex flex-row justify-center gap-x-3 items-center  bg-blue-300 hover:bg-blue-400"
+                // style={{ backgroundColor: " EEEEEE" }}
+                // style={{ background: "#727CF5" }}
+                style={{ border: "solid black 1px" }}
               >
-                {fileName}
-              </p>
+                <LuFileUp size={23} />
+                Choose File
+              </label>
+              <input
+                type="file"
+                id="file-upload"
+                style={{
+                  display: "none",
+                }}
+                onChange={handleFileChange}
+              />
             </div>
-            <input
-              type="file"
-              id="file-upload"
-              style={{
-                display: "none",
-                textAlign: "center",
-              }}
-              onChange={handleFileChange}
-            />
-            <label
-              htmlFor="file-upload"
-              className="uploadfile-btn-style hover:bg-blue-400"
-              // style={{ backgroundColor: " EEEEEE" }}
+
+            <p
+              className="filelabel-container whitespace-nowrap"
+              style={{ borderColor: "gray", borderWidth: "0.5px" }}
             >
-              <LuFileUp size={25} />
-              Choose File
-            </label>
+              {fileName}
+            </p>
           </section>
           {/* input fields */}
           <section className="flex flex-col gap-y-4 my-4">

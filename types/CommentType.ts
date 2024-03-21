@@ -7,6 +7,7 @@ export interface FetchedCourse {
   teachingMethodComments: Comment[];
   assessmentComments: Comment[];
   contentComments: Comment[];
+  responseCount: number;
 }
 export interface Comment {
   text: string;
