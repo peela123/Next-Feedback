@@ -13,41 +13,135 @@ interface Props {
 interface Data {
   data: number[];
   stack: "A" | "B" | "C";
-  label?: string;
+  label?: "Positive" | "Negative" | "Neutral";
   color?: string;
+  labelText?: string;
 }
 
 const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
   // const [fetchedData, setFetchedData] = useState<FetchedCourse[]>([]);
 
-  const [fetchedBarData, setFetchedBarData] = useState<Data[]>([]);
+  // const [fetchedBarData, setFetchedBarData] = useState<Data[]>([]);
+
+  const [fetchedData, setFetchedData] = useState<FetchedCourse[]>([]);
+
+  const [barData, setBarData] = useState<Data[]>([]);
 
   useEffect(() => {
-    axios
-      .get(
-        `http://127.0.0.1:5000/api/user_bar_chart?cmuAccount=${cmuAccount}&courseNo=${courseNo}`
-      )
-      .then((res) => {
-        //axios already parse JSON to javascript object
-        // setFetchedBarData(res.data);
-
-        const colors = ["#d42c15", "#08c446", "#808080"];
-        const processedData = res.data.map(
-          (item: FetchedCourse, index: number) => ({
-            ...item,
-            // Use the index to cycle through the colors array
-            color: colors[index % colors.length],
-          })
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:5000/api/user_course?cmuAccount=${cmuAccount}&courseNo=${courseNo}`
         );
+        const courses: FetchedCourse[] = response.data;
+        setFetchedData(courses);
 
-        setFetchedBarData(processedData);
+        // Process the fetched data to calculate sentiments
+        const sentimentAnalysis = courses.map((course) => {
+          let teachingMethodSentiment = {
+            Positive: 0,
+            Negative: 0,
+            Neutral: 0,
+          };
+          let assessmentSentiment = { Positive: 0, Negative: 0, Neutral: 0 };
+          let contentSentiment = { Positive: 0, Negative: 0, Neutral: 0 };
 
-        console.log("fetchedBarData:", res.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data: ", error);
-      });
+          course.teachingMethodComments.forEach((comment) => {
+            teachingMethodSentiment[comment.sentiment]++;
+          });
+
+          course.assessmentComments.forEach((comment) => {
+            assessmentSentiment[comment.sentiment]++;
+          });
+
+          course.contentComments.forEach((comment) => {
+            contentSentiment[comment.sentiment]++;
+          });
+
+          return {
+            teachingMethodSentiment,
+            assessmentSentiment,
+            contentSentiment,
+          };
+        });
+
+        // Initialize barData format
+        const newBarData: Data[] = [
+          {
+            data: sentimentAnalysis.map(
+              (a) => a.teachingMethodSentiment.Positive
+            ),
+            stack: "A",
+            label: "Positive",
+            color: "#4CAF50",
+            labelText: "testtest",
+          },
+          {
+            data: sentimentAnalysis.map(
+              (a) => a.teachingMethodSentiment.Negative
+            ),
+            stack: "A",
+            label: "Negative",
+            color: "#F44336",
+          },
+          {
+            data: sentimentAnalysis.map(
+              (a) => a.teachingMethodSentiment.Neutral
+            ),
+            stack: "A",
+            label: "Neutral",
+            color: "#8b8b8b",
+          },
+          {
+            data: sentimentAnalysis.map((a) => a.assessmentSentiment.Positive),
+            stack: "B",
+            // label: "Positive",
+            color: "#4CAF50",
+          },
+          {
+            data: sentimentAnalysis.map((a) => a.assessmentSentiment.Negative),
+            stack: "B",
+            // label: "Negative",
+            color: "#F44336",
+          },
+          {
+            data: sentimentAnalysis.map((a) => a.assessmentSentiment.Neutral),
+            stack: "B",
+            // label: "Neutral",
+            color: "#8b8b8b",
+          },
+          {
+            data: sentimentAnalysis.map((a) => a.contentSentiment.Positive),
+            stack: "C",
+            // label: "Positive",
+            color: "#4CAF50",
+          },
+          {
+            data: sentimentAnalysis.map((a) => a.contentSentiment.Negative),
+            stack: "C",
+            // label: "Negative",
+            color: "#F44336",
+          },
+          {
+            data: sentimentAnalysis.map((a) => a.contentSentiment.Neutral),
+            stack: "C",
+            // label: "Neutral",
+            color: "#8b8b8b",
+          },
+        ];
+
+        setBarData(newBarData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, [cmuAccount, courseNo]);
+
+  // console.log("fecthed overall data2:", fetchedData);
+  // console.log("bar data:", barData);
+  const sample = [1, 10, 30, 50, 70, 90, 100];
 
   return (
     <section
@@ -65,26 +159,27 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
         Course Overall Summary
       </h1>
       <div className="flex flex-row grow">
-        {/* <p>sds</p> */}
-        {/* <p>sdsds</p> */}
         <BarChart
-          // style={{ width: "100%", height: "100%" }}
-
-          series={fetchedBarData}
+          // yAxis={[{ scaleType: "band", dataKey: "prepareData" }]}
+          // leftAxis="linearAxis"
+          slotProps={{
+            legend: {
+              direction: "row",
+              position: { vertical: "top", horizontal: "right" },
+              padding: 13,
+            },
+          }}
+          xAxis={[
+            {
+              scaleType: "band",
+              dataKey: "labelText",
+              data: ["Page 1", "Page 2", "Page 3"],
+            },
+          ]}
+          series={barData}
           // width={200}
           // height={280}
         />
-        {/* <BarChart
-          series={[
-            { data: [3, 4, 1], stack: "A", label: "Series A1" },
-            { data: [4, 3, 1], stack: "A", label: "Series A2", color: "red" },
-            { data: [5, 4, 1], stack: "B", label: "Series B1" },
-            { data: [2, 8, 1], stack: "B", label: "Series B2" },
-            { data: [10, 8, 9], label: "Series C1" },
-          ]}
-          width={600}
-          height={350}
-        /> */}
       </div>
     </section>
   );

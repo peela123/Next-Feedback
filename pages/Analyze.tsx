@@ -201,7 +201,11 @@ const Analyze: FC = () => {
                     })`}
                   </h1> */}
                   <h1 className="text-xl">
-                    {`ความคิดเห็นทั้งหมด(${responseCount})`}
+                    {`ความคิดเห็นทั้งหมด(${
+                      (teachingMethodComments?.length ?? 0) +
+                      (assessmentComments?.length ?? 0) +
+                      (contentComments?.length ?? 0)
+                    })`}
                   </h1>
                   <button
                     onClick={handleSentimentView}
@@ -227,21 +231,23 @@ const Analyze: FC = () => {
               >
                 <section>
                   <h1 className="summary-text-style mb-1">
-                    Content ({contentComments?.length ?? 0})
+                    Teaching Method ({teachingMethodComments?.length ?? 0})
                   </h1>
                   <ul>
-                    {contentComments?.map((comment: Comment, index: number) => (
-                      <li
-                        key={index}
-                        className={
-                          isSentimentView
-                            ? getColorForSentiment(
-                                comment.sentiment.toLowerCase()
-                              )
-                            : "text-black"
-                        }
-                      >{` ${comment.text}`}</li>
-                    ))}
+                    {teachingMethodComments?.map(
+                      (comment: Comment, index: number) => (
+                        <li
+                          key={index}
+                          className={
+                            isSentimentView
+                              ? getColorForSentiment(
+                                  comment.sentiment.toLowerCase()
+                                )
+                              : "text-black"
+                          }
+                        >{` ${comment.text} `}</li>
+                      )
+                    )}
                   </ul>
                 </section>
                 <section>
@@ -265,26 +271,23 @@ const Analyze: FC = () => {
                     )}
                   </ul>
                 </section>
-
                 <section>
                   <h1 className="summary-text-style mb-1">
-                    Teaching Method ({teachingMethodComments?.length ?? 0})
+                    Content ({contentComments?.length ?? 0})
                   </h1>
                   <ul>
-                    {teachingMethodComments?.map(
-                      (comment: Comment, index: number) => (
-                        <li
-                          key={index}
-                          className={
-                            isSentimentView
-                              ? getColorForSentiment(
-                                  comment.sentiment.toLowerCase()
-                                )
-                              : "text-black"
-                          }
-                        >{` ${comment.text} `}</li>
-                      )
-                    )}
+                    {contentComments?.map((comment: Comment, index: number) => (
+                      <li
+                        key={index}
+                        className={
+                          isSentimentView
+                            ? getColorForSentiment(
+                                comment.sentiment.toLowerCase()
+                              )
+                            : "text-black"
+                        }
+                      >{` ${comment.text}`}</li>
+                    ))}
                   </ul>
                 </section>
               </div>

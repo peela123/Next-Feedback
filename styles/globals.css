@@ -13,7 +13,7 @@ body {
   background-color: #565656;
   /* background-color: whitesmoke; */
   border-radius: 5px;
-  height: 43px;
+  height: 38px;
   min-width: "100px";
   width: 100%;
   font-size: 19px;
@@ -23,7 +23,7 @@ body {
 .sidebarsub-btn-style {
   background-color: #565656;
   border-radius: 5px;
-  height: 36px;
+  height: 31px;
   width: 100%;
   padding-left: 1rem;
   padding-right: 1rem;

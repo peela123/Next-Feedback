@@ -45,6 +45,8 @@ const SideBar: FC<Props> = ({
   toggleDarkMode,
 }) => {
   const [selectedCourseNo, setSelectedCourseNo] = useState<number | null>(null);
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [selectedSemester, setSelectedSemester] = useState<string | null>(null);
 
   const router = useRouter();
   function signOut() {
@@ -141,7 +143,15 @@ const SideBar: FC<Props> = ({
                   <button
                     key={index}
                     className="sidebarsub-btn-style hover:bg-neutral-500 "
-                    onClick={() =>
+                    style={{
+                      backgroundColor:
+                        selectedCourseNo === course.courseNo &&
+                        selectedYear === course.academicYear &&
+                        selectedSemester === course.semester
+                          ? "#727877 "
+                          : "",
+                    }}
+                    onClick={() => {
                       handleSubFeedbackClick(
                         course.courseName,
                         course.courseNo,
@@ -151,14 +161,18 @@ const SideBar: FC<Props> = ({
                         course.assessmentComments,
                         course.contentComments,
                         course.responseCount
-                      )
-                    }
+                      );
+                      setSelectedCourseNo(course.courseNo);
+                      setSelectedYear(course.academicYear); // Set the selected year
+                      setSelectedSemester(course.semester); // Set the selected semester
+                    }}
                   >
-                    {`Year ${course.academicYear} Term ${course.semester}(${
+                    {/* {`Year ${course.academicYear} Term ${course.semester}(${
                       course.teachingMethodComments.length +
                       course.assessmentComments.length +
                       course.contentComments.length
-                    })`}
+                    })`} */}
+                    {`Year ${course.academicYear} Term ${course.semester} (${course.responseCount})`}
                   </button>
                 ))}
           </section>

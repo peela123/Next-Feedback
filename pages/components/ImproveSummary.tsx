@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import axios from "axios";
+import { FetchedCourse, Comment } from "../../types/CommentType";
 
 // import { FetchedCourse, Comment } from "../../types/CommentType";
 
@@ -21,22 +22,6 @@ interface Data {
   Positive: number;
   Negative: number;
   Neutral: number;
-}
-
-export interface FetchedCourse {
-  courseName: string;
-  courseNo: number;
-  semester: string;
-  academicYear: number;
-  cmuAccount: string;
-  teachingMethodComments: Comment[];
-  assessmentComments: Comment[];
-  contentComments: Comment[];
-}
-export interface Comment {
-  text: string;
-  sentiment: "Positive" | "Negative" | "Neutral";
-  label: string;
 }
 
 const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
@@ -68,7 +53,7 @@ const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
     return 0;
   };
   const prepareData: Data[] = fetchedData.map((course) => ({
-    semesterNYear: `ปี${course.academicYear}${course.semester}`,
+    semesterNYear: `ปี${course.academicYear}เทอม${course.semester}`,
     Positive:
       countSentiment(course.teachingMethodComments, "Pos") +
       countSentiment(course.assessmentComments, "Pos") +
@@ -94,7 +79,7 @@ const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
       .then((res) => {
         //axios already parse JSON to javascript object
         setFetchedData(res.data);
-        console.log("fetchedData", fetchedData);
+        // console.log("fetchedData", fetchedData);
       })
       .catch((error) => {
         console.error("Error fetching data: ", error);
@@ -127,9 +112,14 @@ const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
               { name: "Neutral", color: "#808080" },
             ]}
             curveType="linear"
+            tickLine="xy"
+            gridAxis="xy"
+            withGradient={false}
           />
         ) : (
-          <div>No data available</div>
+          <div className="flex flex-row w-full  justify-center items-center">
+            No data available
+          </div>
         )}
       </div>
     </section>
