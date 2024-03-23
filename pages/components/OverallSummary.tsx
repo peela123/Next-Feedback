@@ -13,7 +13,7 @@ interface Props {
 interface Data {
   data: number[];
   stack: "A" | "B" | "C";
-  label?: "Positive" | "Negative" | "Neutral";
+  label?: string;
   color?: string;
   dataKey?: string;
   // labelText?: string;
@@ -92,7 +92,7 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
           {
             data: sentimentAnalysis.map((a) => a.assessmentSentiment.Positive),
             stack: "B",
-            // label: "Positive",
+            // label: "AM Positive",
             color: "#4CAF50",
           },
           {
@@ -208,10 +208,6 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
               labelStyle: {
                 fontSize: 20,
                 color: "red",
-                // transform: `translateY(${
-                //       // Hack that should be added in the lib latter.
-                //       5 * Math.abs(Math.sin((Math.PI * props.angle) / 180))
-                //     }px)`
               },
               tickLabelStyle: {
                 color: "red",
@@ -224,7 +220,7 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
                 "year 2023 term 1",
                 "year 2023 term 2",
                 "year 2023 term summer",
-                "year 2024 term 1",
+                // "year 2024 term 1",
               ],
               id: "semester",
               label: "Semester",
@@ -238,10 +234,6 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
               labelStyle: {
                 fontSize: 20,
                 color: "red",
-                // transform: `translateY(${
-                //       // Hack that should be added in the lib latter.
-                //       5 * Math.abs(Math.sin((Math.PI * props.angle) / 180))
-                //     }px)`
               },
             },
             { id: "logAxis", scaleType: "log" },
