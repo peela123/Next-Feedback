@@ -1,5 +1,4 @@
 import { FC } from "react";
-import React from "react";
 import {
   BarChart,
   Bar,
@@ -19,9 +18,10 @@ interface Props {
 const data = [
   {
     name: "Page TM",
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
+
+    uv: 1000,
+    pv: 2000,
+    amt: 3000,
     uv2: 1000,
     pv2: 1500,
     amt2: 2000,
@@ -96,30 +96,30 @@ const ClusterStacked: FC<Props> = ({ cmuAccount, courseNo }) => {
       <Tooltip />
       <Legend />
       {/* teaching method bar */}
-      <Bar dataKey="pv" fill="green" minPointSize={5} stackId="a">
+      <Bar dataKey="uv" fill="green" minPointSize={5} stackId="a">
         <LabelList dataKey="name" content={renderCustomizedLabel} />
       </Bar>
-      <Bar dataKey="uv" fill="red" minPointSize={5} stackId="a">
+      <Bar dataKey="pv" fill="red" minPointSize={5} stackId="a">
         <LabelList dataKey="name" content={renderCustomizedLabel} />
       </Bar>
       <Bar dataKey="amt" fill="gray" minPointSize={5} stackId="a">
         <LabelList dataKey="name" content={renderCustomizedLabel} />
       </Bar>
       {/* assessment bar */}
-      <Bar dataKey="pv2" fill="green" minPointSize={10} stackId="b">
+      <Bar dataKey="uv2" fill="green" minPointSize={10} stackId="b">
         <LabelList dataKey="name" content={renderCustomizedLabel} />
       </Bar>
-      <Bar dataKey="uv2" fill="red" minPointSize={10} stackId="b">
+      <Bar dataKey="pv2" fill="red" minPointSize={10} stackId="b">
         <LabelList dataKey="name" content={renderCustomizedLabel} />
       </Bar>
       <Bar dataKey="amt2" fill="gray" minPointSize={10} stackId="b">
         <LabelList dataKey="name" content={renderCustomizedLabel} />
       </Bar>
       {/* content bar */}
-      <Bar dataKey="pv3" fill="green" minPointSize={5} stackId="c">
+      <Bar dataKey="uv3" fill="green" minPointSize={5} stackId="c">
         <LabelList dataKey="name" content={renderCustomizedLabel} />
       </Bar>
-      <Bar dataKey="uv3" fill="red" minPointSize={5} stackId="c">
+      <Bar dataKey="pv3" fill="red" minPointSize={5} stackId="c">
         <LabelList dataKey="name" content={renderCustomizedLabel} />
       </Bar>
       <Bar dataKey="amt3" fill="gray" minPointSize={5} stackId="c">

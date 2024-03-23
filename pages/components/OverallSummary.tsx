@@ -144,6 +144,7 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
       newYork: 86,
       seoul: 21,
       month: "January",
+      year: 2023,
     },
     {
       london: 50,
@@ -151,6 +152,7 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
       newYork: 78,
       seoul: 28,
       month: "February",
+      year: 2024,
     },
     {
       london: 47,
@@ -158,69 +160,23 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
       newYork: 106,
       seoul: 41,
       month: "March",
+      year: 2025,
     },
     {
-      london: 54,
-      paris: 56,
-      newYork: 92,
-      seoul: 73,
-      month: "April",
-    },
-    {
-      london: 57,
-      paris: 69,
-      newYork: 92,
-      seoul: 99,
-      month: "May",
-    },
-    {
-      london: 60,
-      paris: 63,
-      newYork: 103,
-      seoul: 144,
-      month: "June",
-    },
-    {
-      london: 59,
-      paris: 60,
-      newYork: 105,
-      seoul: 319,
-      month: "July",
-    },
-    {
-      london: 65,
-      paris: 60,
+      london: 47,
+      paris: 53,
       newYork: 106,
-      seoul: 249,
-      month: "August",
+      seoul: 41,
+      month: "March",
+      year: 2026,
     },
     {
-      london: 51,
-      paris: 51,
-      newYork: 95,
-      seoul: 131,
-      month: "September",
-    },
-    {
-      london: 60,
-      paris: 65,
-      newYork: 97,
-      seoul: 55,
-      month: "October",
-    },
-    {
-      london: 67,
-      paris: 64,
-      newYork: 76,
-      seoul: 48,
-      month: "November",
-    },
-    {
-      london: 61,
-      paris: 70,
-      newYork: 103,
-      seoul: 25,
-      month: "December",
+      london: 47,
+      paris: 53,
+      newYork: 106,
+      seoul: 41,
+      month: "March",
+      year: 2027,
     },
   ];
 
@@ -245,9 +201,49 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
           series={barData}
           height={400}
           width={1200}
-          xAxis={[{ scaleType: "band", dataKey: "month" }]}
+          margin={{ left: 70, right: 70 }}
+          // xAxis={[{ scaleType: "band", dataKey: "year" }]}
+          xAxis={[
+            {
+              labelStyle: {
+                fontSize: 20,
+                color: "red",
+                // transform: `translateY(${
+                //       // Hack that should be added in the lib latter.
+                //       5 * Math.abs(Math.sin((Math.PI * props.angle) / 180))
+                //     }px)`
+              },
+              tickLabelStyle: {
+                color: "red",
+                angle: 0,
+                textAnchor: "start",
+                fontSize: 18,
+              },
+              scaleType: "band",
+              data: [
+                "year 2023 term 1",
+                "year 2023 term 2",
+                "year 2023 term summer",
+                "year 2024 term 1",
+              ],
+              id: "semester",
+              label: "Semester",
+            },
+          ]}
           yAxis={[
-            { id: "linearAxis", scaleType: "linear" },
+            {
+              id: "linearAxis",
+              scaleType: "linear",
+              label: "#unit",
+              labelStyle: {
+                fontSize: 20,
+                color: "red",
+                // transform: `translateY(${
+                //       // Hack that should be added in the lib latter.
+                //       5 * Math.abs(Math.sin((Math.PI * props.angle) / 180))
+                //     }px)`
+              },
+            },
             { id: "logAxis", scaleType: "log" },
           ]}
           leftAxis="linearAxis"
