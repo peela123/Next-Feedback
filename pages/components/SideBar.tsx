@@ -9,13 +9,18 @@ import AddFeedbackBtn from "./AddFeedbackBtn";
 import { MdOutlineSubject, MdOutlineDarkMode } from "react-icons/md";
 import { BsDatabase } from "react-icons/bs";
 import { GrNotes } from "react-icons/gr";
-import { BsArrowReturnLeft } from "react-icons/bs";
+import { TiDeleteOutline } from "react-icons/ti";
 import { IoChevronDownSharp } from "react-icons/io5";
-import { Select, Menu } from "@mantine/core";
-import { Button } from "@mantine/core";
+
 import { ScrollArea } from "@mantine/core";
+import { Alert } from "@mantine/core";
+import { IconInfoCircle } from "@tabler/icons-react";
+import { Switch } from "@mantine/core";
+import { Modal, Group, Button, Text, Select, Menu, Badge } from "@mantine/core";
+import { useDisclosure, useCounter } from "@mantine/hooks";
 
 import { FetchedCourse, Comment } from "../../types/CommentType";
+import LogOutBtn from "./LogOutBtn";
 
 interface Props {
   fetchedCourse: FetchedCourse[];
@@ -49,11 +54,35 @@ const SideBar: FC<Props> = ({
   const [selectedSemester, setSelectedSemester] = useState<string | null>(null);
 
   const router = useRouter();
-  function signOut() {
-    axios.post("/api/signOut").finally(() => {
-      router.push("/");
-    });
-  }
+
+  const handleDeleteFeedback = async (
+    cmuAccount: string,
+    academicYear: number,
+    semester: string,
+    courseNo: number
+  ) => {
+    try {
+      const res = await axios.delete(
+        `http://127.0.0.1:5000/api/user_course_delete`,
+        {
+          params: {
+            cmuAccount,
+            academicYear,
+            semester,
+            courseNo,
+          },
+        }
+      );
+      console.log(`${res.data.message}`);
+      // If deletion is successful, refresh the page
+      router.reload();
+    } catch (error) {
+      console.error("Something wrong delete document: ", error);
+    }
+  };
+
+  const icon = <IconInfoCircle />;
+  const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <ScrollArea
@@ -62,7 +91,7 @@ const SideBar: FC<Props> = ({
       scrollbars="y"
       scrollbarSize={6}
       scrollHideDelay={500}
-      style={{ backgroundColor: "#363636" }}
+      style={{ backgroundColor: "#202427" }}
       className="flex flex-col"
     >
       <div className="flex flex-col justify-center items-center text-white grow">
@@ -78,9 +107,6 @@ const SideBar: FC<Props> = ({
         {/* line break */}
         <hr
           style={{
-            // border: "none",
-            // height: "2px",
-            // backgroundColor: "#824B4B",
             marginTop: "32px",
             marginBottom: "32px",
             borderWidth: "1px",
@@ -126,7 +152,7 @@ const SideBar: FC<Props> = ({
           {/* feedback section*/}
           <section className="flex flex-col gap-y-2 mt-4 overflow-auto">
             {/* feedback button */}
-            <button className="sidebar-btn-style flex flex-row justify-center items-center border-2 border-transparent hover:bg-stone-500 transition-colors duration-150">
+            <button className="sidebar-btn-style flex flex-row justify-center items-center border-2 border-transparent hover:bg-stone-500 transition-colors duration-100">
               <BsDatabase size={30} />
               <p className="pl-3"> Feedback</p>
               <IoChevronDownSharp size={25} className="ml-12" />
@@ -142,7 +168,7 @@ const SideBar: FC<Props> = ({
                 .map((course: FetchedCourse, index: number) => (
                   <button
                     key={index}
-                    className="sidebarsub-btn-style hover:bg-neutral-500 "
+                    className="sidebarsub-btn-style flex flex-row justify-bertween items-center  hover:bg-neutral-500 "
                     style={{
                       backgroundColor:
                         selectedCourseNo === course.courseNo &&
@@ -167,12 +193,29 @@ const SideBar: FC<Props> = ({
                       setSelectedSemester(course.semester); // Set the selected semester
                     }}
                   >
-                    {/* {`Year ${course.academicYear} Term ${course.semester}(${
-                      course.teachingMethodComments.length +
-                      course.assessmentComments.length +
-                      course.contentComments.length
-                    })`} */}
-                    {`Year ${course.academicYear} Term ${course.semester} (${course.responseCount})`}
+                    <p className="text-left w-11/12 truncate ">
+                      {" "}
+                      {`Year ${course.academicYear} Term ${course.semester} (${course.responseCount})`}
+                    </p>
+                    <TiDeleteOutline
+                      color={"red"}
+                      style={{ width: "24px", height: "24px" }}
+                      className="w-1/12 transition-all duration-100 ease-in-out hover:scale-125"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const isConfirmed = window.confirm(
+                          "Are you sure you want to delete this feedback?"
+                        );
+                        if (isConfirmed) {
+                          handleDeleteFeedback(
+                            cmuAccount,
+                            course.academicYear,
+                            course.semester,
+                            course.courseNo
+                          );
+                        }
+                      }}
+                    />
                   </button>
                 ))}
           </section>
@@ -189,12 +232,18 @@ const SideBar: FC<Props> = ({
             </button>
           </section>
           {/* dark mode section */}
-          <button
-            onClick={toggleDarkMode}
-            className="mt-4 sidebar-btn-style flex flex-row justiy-center items-center hover:bg-neutral-500"
-          >
-            <MdOutlineDarkMode size={30} />
-            <p className="pl-3">Dark Mode</p>
+          <button className="mt-4 sidebar-btn-style flex flex-row  justify-evenly items-center ">
+            <div className="flex flex-row">
+              <MdOutlineDarkMode size={30} />
+              <p className="">Dark Mode</p>
+            </div>
+            <Switch
+              defaultChecked
+              color="green"
+              size="md"
+              onClick={toggleDarkMode}
+              className="transition-all duration-1000 ease-in-out"
+            />
           </button>
 
           {/* add feedback section */}
@@ -202,14 +251,7 @@ const SideBar: FC<Props> = ({
         </div>
 
         {/* logout */}
-        <Link
-          href="/"
-          className="flex flex-row justify-evenly w-11/12 items-center my-10 rounded-2xl h-9 bg-slate-600 hover:bg-red-400"
-          onClick={signOut}
-        >
-          <BsArrowReturnLeft size={32} color={"red"} />
-          <p className="text-lg">Log Out</p>
-        </Link>
+        <LogOutBtn />
       </div>
     </ScrollArea>
   );

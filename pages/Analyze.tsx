@@ -133,7 +133,7 @@ const Analyze: FC = () => {
   return (
     <main className="bg-cyan-400 h-screen">
       {/* main container */}
-      <div className="flex flex-row h-full bg-red-600">
+      <div className="flex flex-row h-full ">
         {/* left side container*/}
         <div className="flex w-2/12 h-full">
           <SideBar
@@ -149,7 +149,7 @@ const Analyze: FC = () => {
 
         {/* right side container*/}
         <div
-          className="flex flex-col h-full grow w-10/12"
+          className="flex flex-row grow h-full w-10/12 justify-center items-center"
           // style={{ backgroundColor: "#7C6B6B" }}
           style={{ backgroundColor: isDarkMode ? "#EFEFEF" : "#292929" }}
         >
@@ -160,7 +160,7 @@ const Analyze: FC = () => {
               style={{
                 height: "93%",
                 width: "1200px",
-                backgroundColor: "#363936",
+                backgroundColor: "#363636",
               }}
             >
               <div className="rounded-lg w-fit ml-6 my-4">
@@ -178,16 +178,21 @@ const Analyze: FC = () => {
           ) : (
             // feedback box
             <section
-              className="flex flex-col mt-6 ml-6 rounded"
+              className="flex flex-col rounded-xl"
               style={{
-                backgroundColor: "#D9D9D9",
-
+                backgroundColor: isDarkMode ? "#D9D9D9" : "#363636",
                 height: "93%",
-                width: "1200px",
+                width: "95%",
               }}
+              // style={{
+              //   backgroundColor: "#D9D9D9",
+
+              //   height: "93%",
+              //   width: "1200px",
+              // }}
             >
               <div className="rounded-lg  ml-6 my-4">
-                <p style={{ color: "#414141" }}>
+                <p style={{ color: isDarkMode ? "#414141" : "#EFEFEF" }}>
                   ปีการศึกษา {academicYear} ภาคเรียนที่ {semester} กระบวนวิชา{" "}
                   {courseName}
                 </p>
@@ -200,23 +205,30 @@ const Analyze: FC = () => {
                       (contentComments?.length ?? 0)
                     })`}
                   </h1> */}
-                  <h1 className="text-xl">
+
+                  <h1
+                    className="text-xl"
+                    style={{ color: isDarkMode ? "#303030" : "#EFEFEF" }}
+                  >
                     {`ความคิดเห็นทั้งหมด(${
                       (teachingMethodComments?.length ?? 0) +
                       (assessmentComments?.length ?? 0) +
                       (contentComments?.length ?? 0)
                     })`}
                   </h1>
+
                   <button
                     onClick={handleSentimentView}
                     className="gap-x-4 rounded mr-12 bg-gray-400 hover:bg-gray-300"
                     style={{ width: "150px" }}
                   >
                     {isSentimentView ? (
-                      "default view"
+                      <p className="transition-all duration-100 ease-in-out hover:scale-125">
+                        default view
+                      </p>
                     ) : (
                       // <img src="public\sen-btn.png" />
-                      <div className="flex flex-row justify-center items-center gap-x-2">
+                      <div className="flex flex-row justify-center items-center gap-x-2 transition-all duration-200 ease-in-out hover:scale-110">
                         <p>sentiment view</p>
                         <FaSearchPlus />
                       </div>
@@ -227,7 +239,10 @@ const Analyze: FC = () => {
               {/* feedback container */}
               <div
                 className="overflow-auto rounded-lg pl-8 pt-2 w-full h-full"
-                style={{ backgroundColor: "#FDFDFD" }}
+                style={{
+                  backgroundColor: isDarkMode ? "#EFEFEF" : "#404040",
+                  color: isDarkMode ? "black" : "#EFEFEF",
+                }}
               >
                 <section>
                   <h1 className="summary-text-style mb-1">
@@ -243,7 +258,9 @@ const Analyze: FC = () => {
                               ? getColorForSentiment(
                                   comment.sentiment.toLowerCase()
                                 )
-                              : "text-black"
+                              : isDarkMode
+                              ? "#EFEFEF"
+                              : "#404040"
                           }
                         >{` ${comment.text} `}</li>
                       )
@@ -264,7 +281,9 @@ const Analyze: FC = () => {
                               ? getColorForSentiment(
                                   comment.sentiment.toLowerCase()
                                 )
-                              : "text-black"
+                              : isDarkMode
+                              ? "#EFEFEF"
+                              : "#404040"
                           }
                         >{` ${comment.text} `}</li>
                       )
@@ -284,7 +303,9 @@ const Analyze: FC = () => {
                             ? getColorForSentiment(
                                 comment.sentiment.toLowerCase()
                               )
-                            : "text-black"
+                            : isDarkMode
+                            ? "#EFEFEF"
+                            : "#404040"
                         }
                       >{` ${comment.text}`}</li>
                     ))}

@@ -9,15 +9,12 @@ interface Props {
   cmuAccount: string;
   courseNo: number | undefined;
 }
-
 interface Data {
   data: number[];
   stack: "A" | "B" | "C";
   label?: string;
   color?: string;
   dataKey?: string;
-  // labelText?: string;
-  // xAxisKey?: string;
 }
 
 const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
@@ -136,58 +133,17 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
     fetchData();
   }, [cmuAccount, courseNo]);
 
-  const sample = [1, 10, 30, 50, 70, 90, 100];
-  const dataset = [
-    {
-      london: 59,
-      paris: 57,
-      newYork: 86,
-      seoul: 21,
-      month: "January",
-      year: 2023,
-    },
-    {
-      london: 50,
-      paris: 52,
-      newYork: 78,
-      seoul: 28,
-      month: "February",
-      year: 2024,
-    },
-    {
-      london: 47,
-      paris: 53,
-      newYork: 106,
-      seoul: 41,
-      month: "March",
-      year: 2025,
-    },
-    {
-      london: 47,
-      paris: 53,
-      newYork: 106,
-      seoul: 41,
-      month: "March",
-      year: 2026,
-    },
-    {
-      london: 47,
-      paris: 53,
-      newYork: 106,
-      seoul: 41,
-      month: "March",
-      year: 2027,
-    },
-  ];
+  const sample = fetchedData.map((course) => {
+    return `${course.academicYear} ${course.semester}`;
+  });
 
   return (
     <section
       style={{
-        // backgroundColor: "#FDFDFD",
-        backgroundColor: "#363636",
+        backgroundColor: "#404040",
         color: "#9d9d9d",
-        width: "1200px",
-        height: "48.5%",
+        width: "100%",
+        // height: "54.5%",
         boxSizing: "border-box",
       }}
       className="flex flex-col rounded overflow-auto "
@@ -195,59 +151,70 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
       <h1 className=" mx-auto font-semibold text-gray-300">
         Course Overall Summary
       </h1>
-      <div className="flex flex-row grow">
-        <BarChart
-          dataset={dataset}
-          series={barData}
-          height={400}
-          width={1200}
-          margin={{ left: 70, right: 70 }}
-          // xAxis={[{ scaleType: "band", dataKey: "year" }]}
-          xAxis={[
-            {
-              labelStyle: {
-                fontSize: 20,
-                color: "red",
+
+      <div className="flex flex-row grow  overflow-x-hidden overflow-y-hidden ">
+        {fetchedData.length > 0 ? (
+          <div>no data available</div>
+        ) : (
+          <BarChart
+            // dataset={dataset}
+
+            series={barData}
+            height={330}
+            width={1700}
+            margin={
+              {
+                // left: 180,
+                // // right: 80,
+                // top: 80,
+                // bottom: 80,
+              }
+            }
+            // xAxis={[{ scaleType: "band", dataKey: "year" }]}
+            xAxis={[
+              {
+                labelStyle: {
+                  fontSize: 20,
+                  fill: "rgb(209 213 219)",
+                },
+                tickLabelStyle: {
+                  fill: "rgb(209 213 219)",
+                  angle: 0,
+                  textAnchor: "start",
+                  fontSize: 15,
+                },
+                scaleType: "band",
+
+                data: sample,
+                // dataKey: "year",
+                id: "semester",
+                label: "semester",
               },
-              tickLabelStyle: {
-                color: "red",
-                angle: 0,
-                textAnchor: "start",
-                fontSize: 18,
+            ]}
+            yAxis={[
+              {
+                id: "linearAxis",
+                scaleType: "linear",
+                label: "#unit",
+                labelStyle: {
+                  fontSize: 18,
+
+                  fill: "rgb(209 213 219)",
+                },
               },
-              scaleType: "band",
-              data: [
-                "year 2023 term 1",
-                "year 2023 term 2",
-                "year 2023 term summer",
-                // "year 2024 term 1",
-              ],
-              id: "semester",
-              label: "Semester",
-            },
-          ]}
-          yAxis={[
-            {
-              id: "linearAxis",
-              scaleType: "linear",
-              label: "#unit",
-              labelStyle: {
-                fontSize: 20,
-                color: "red",
+              // { id: "logAxis", scaleType: "log" },
+            ]}
+            // leftAxis="linearAxis"
+            // legend
+            slotProps={{
+              legend: {
+                direction: "row",
+                position: { vertical: "top", horizontal: "right" },
+                padding: 10,
               },
-            },
-            { id: "logAxis", scaleType: "log" },
-          ]}
-          leftAxis="linearAxis"
-          // legend
-          slotProps={{
-            legend: {
-              direction: "row",
-              position: { vertical: "top", horizontal: "right" },
-              padding: 13,
-            },
-          }}
-        />
+            }}
+          />
+        )}
       </div>
     </section>
   );

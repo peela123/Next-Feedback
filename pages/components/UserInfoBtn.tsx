@@ -3,11 +3,14 @@ import axios from "axios";
 import { useRouter } from "next/router";
 
 import { FaRegUser } from "react-icons/fa6";
-import { IconSearch } from "@tabler/icons-react";
+
 import { GoGraph } from "react-icons/go";
 import { CgProfile } from "react-icons/cg";
 import { Menu } from "@mantine/core";
 import { VscSignOut } from "react-icons/vsc";
+
+import { Avatar } from "@mantine/core";
+import { IconStar } from "@tabler/icons-react";
 
 interface Props {
   haveDropDown: boolean;
@@ -37,7 +40,15 @@ const UserInfoBtn: FC<Props> = ({ haveDropDown }) => {
     >
       <Menu.Target>
         <button className="flex flex-row ml-3 mt-2">
-          <FaRegUser color="white" size={35} />
+          <Avatar
+            variant="filled"
+            color="rgba(107, 106, 106, 1)"
+            size="2.5rem"
+            radius="xl"
+            className="transition-all duration-100 ease-in-out hover:scale-125"
+          >
+            <FaRegUser color="white" size="1.8rem" radius="xl" />
+          </Avatar>
         </button>
       </Menu.Target>
       <Menu.Dropdown

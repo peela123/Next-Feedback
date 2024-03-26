@@ -5,7 +5,6 @@ import { WhoAmIResponse } from "./api/whoAmI";
 
 import readXlsxFile from "read-excel-file";
 
-// import { Switch } from "@mantine/core";
 import Navbar from "./components/Navbar";
 import { LuFileUp } from "react-icons/lu";
 import { Select } from "@mantine/core";
@@ -179,10 +178,10 @@ const UploadFile: FC = () => {
       course = tempFileName;
 
       // Debugging logs
-      console.log("file name:", file?.name);
-      console.log("course number:", number);
-      console.log("course name:", course);
-      console.log("year:", year);
+      // console.log("file name:", file?.name);
+      // console.log("course number:", number);
+      // console.log("course name:", course);
+      // console.log("year:", year);
     }
 
     // Update state
@@ -196,28 +195,36 @@ const UploadFile: FC = () => {
       <Navbar fullName={fullName} cmuAccount={cmuAccount} />
       <div
         className="grow flex flex-row justify-center items-center "
+        style={{ color: "#e3e5e4", backgroundColor: "#363636" }}
         // style={{ backgroundColor: "#1f2123" }}
         // style={{ backgroundColor: "#FEF4F4" }}
         // style={{ backgroundColor: "#404040" }}
       >
         {/* box */}
         <div
-          className="flex flex-col items-center w-11/12 h-max"
-          style={{ width: "94%", height: "90%" }}
+          className="flex flex-col items-center w-11/12  border-1 border-black rounded-3xl"
+          style={{
+            width: "700px",
+            height: "600px",
+            backgroundColor: "#202427",
+          }}
         >
           <section className="flex flex-col text-center mt-6 gap-y-2">
-            <h1 className="text-3xl font-bold">File Classifier</h1>
-            <p className="text-2xl">Make a quick summary!</p>
+            <h1 className="text-2xl font-semibold">File Classifier</h1>
+            <p className="text-xl">Make a quick summary!</p>
           </section>
           {/* file input section */}
           <section className="flex flex-row mt-12 items-center">
             <div>
               <label
                 htmlFor="file-upload"
-                className="uploadfile-btn-style flex flex-row justify-center gap-x-3 items-center  bg-blue-300 hover:bg-blue-400"
+                className="uploadfile-btn-style flex flex-row justify-center gap-x-3 items-center "
                 // style={{ backgroundColor: " EEEEEE" }}
                 // style={{ background: "#727CF5" }}
-                style={{ border: "solid black 1px" }}
+                style={{
+                  border: "solid black 1px",
+                  backgroundColor: "#727cF5",
+                }}
               >
                 <LuFileUp size={23} />
                 Choose File
@@ -302,25 +309,27 @@ const UploadFile: FC = () => {
               </button>
             ) : (
               <div className="flex items-center">
-                <button
-                  className="border-2 border-black px-6 py-2 rounded bg-lime-400 hover:bg-lime-500"
-                  onClick={handleUploadClick}
-                >
-                  Upload File
-                </button>
                 {isLoading ? (
+                  <Button loading loaderProps={{ type: "dots" }}>
+                    Loading button
+                  </Button>
+                ) : (
+                  <button
+                    className="border-2 border-black px-6 py-2 rounded bg-lime-400 hover:bg-lime-500"
+                    onClick={handleUploadClick}
+                  >
+                    <p className="font-semibold text-base">Upload File</p>
+                  </button>
+                )}
+
+                {/* {isLoading ? (
                   <Loader color="blue" size={27} className="ml-6" />
                 ) : (
                   <></>
-                )}
+                )} */}
               </div>
             )}
           </section>
-          {/* <NotificationBox text={errorMessage} /> */}
-          {/* <p>
-            courseName:${courseName} courseNo:{courseNo} year:{academicYear}{" "}
-            semester:{semester}
-          </p> */}
         </div>
       </div>
     </main>

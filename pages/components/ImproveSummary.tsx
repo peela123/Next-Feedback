@@ -8,11 +8,11 @@ import { BarChart } from "@mantine/charts";
 import { Sparkline } from "@mantine/charts";
 import { Stack, Text } from "@mantine/core";
 import { AreaChart } from "@mantine/charts";
+import { LineChart } from "@mantine/charts";
 import { count } from "console";
 import { headers } from "next/headers";
 
 interface Props {
-  // fetchedCourse: FetchedCourse[];
   cmuAccount: string;
   courseNo: number | undefined;
 }
@@ -53,7 +53,7 @@ const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
     return 0;
   };
   const prepareData: Data[] = fetchedData.map((course) => ({
-    semesterNYear: `ปี${course.academicYear}เทอม${course.semester}`,
+    semesterNYear: ` ${course.academicYear} ${course.semester}`,
     Positive:
       countSentiment(course.teachingMethodComments, "Pos") +
       countSentiment(course.assessmentComments, "Pos") +
@@ -90,9 +90,9 @@ const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
     <section
       className=" rounded flex flex-col"
       style={{
-        height: "48%",
+        height: "42%",
         width: "100%",
-        backgroundColor: "#363636",
+        backgroundColor: "#404040",
         color: "#9d9d9d",
       }}
     >
@@ -101,20 +101,21 @@ const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
       </h1>
       <div className="grow flex flex-row ">
         {fetchedData.length > 0 ? (
-          <AreaChart
+          <LineChart
             style={{ width: "95%", flexGrow: "0" }}
             color="rgba(207, 190, 190, 1)"
             data={prepareData}
             dataKey="semesterNYear"
             series={[
-              { name: "Positive", color: "lime" },
-              { name: "Negative", color: "red" },
-              { name: "Neutral", color: "#808080" },
+              { name: "Positive", color: "#51aa55" },
+              { name: "Negative", color: "#e8493e" },
+              { name: "Neutral", color: "#8a8a8a" },
             ]}
             curveType="linear"
-            tickLine="xy"
-            gridAxis="xy"
-            withGradient={false}
+            tickLine="y"
+            gridAxis="y"
+            withLegend
+            // withGradient={false}
           />
         ) : (
           <div className="flex flex-row w-full  justify-center items-center">
