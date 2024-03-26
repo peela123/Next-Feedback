@@ -9,20 +9,15 @@ import {
   MantineProvider,
   TextInput,
 } from "@mantine/core";
+import "@mantine/dropzone/styles.css";
 import { NextUIProvider } from "@nextui-org/react";
 
 const theme = createTheme({
   components: {
     FileInput: FileInput.extend({
       styles: {
-        // label: { color: "blue" },
-        // description: { color: "blue" },
-        // root: { color: "blue" },
-        // wrapper: { color: "red" },
-        // error: { color: "purple" },
-        // input: { color: "yellow" },
-        // required: { color: "red" },
-        // section: { color: "red" },
+        label: { color: "blue" },
+        input: { borderColor: "green", boderWidth: "5px" },
       },
     }),
   },

@@ -14,11 +14,24 @@ import { Input } from "@mantine/core";
 import { error } from "console";
 import { Loader } from "@mantine/core";
 import { FileInput } from "@mantine/core";
-import { Stepper, Button, Group } from "@mantine/core";
+import { FiFilePlus } from "react-icons/fi";
+import { Stepper, Button } from "@mantine/core";
 import { Menu } from "@mantine/core";
+import { MdOutlineFilePresent } from "react-icons/md";
 import { redirect } from "next/navigation";
+import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 
-const UploadFile: FC = () => {
+// for dropzone UI
+import { Group, Text, rem } from "@mantine/core";
+import { IconUpload, IconPhoto, IconX } from "@tabler/icons-react";
+import {
+  Dropzone,
+  DropzoneProps,
+  IMAGE_MIME_TYPE,
+  MS_EXCEL_MIME_TYPE,
+} from "@mantine/dropzone";
+
+const UploadFile: FC = (props: Partial<DropzoneProps>) => {
   const [semester, setSemester] = useState<string>("");
   const [academicYear, setAcademicYear] = useState<string>("");
   const [courseName, setCourseName] = useState<string>("");
@@ -32,8 +45,8 @@ const UploadFile: FC = () => {
   const [fullName, setFullName] = useState("");
   const [cmuAccount, setCmuAccount] = useState("");
   const [studentId, setStudentId] = useState("");
-  const [errorMessage, setErrorMessage] = useState("no error");
-  const [responseMessage, setResponseMessage] = useState<string>("no error"); //message about upload file error
+  const [errorMessage, setErrorMessage] = useState("no error"); // for whoAmI API message
+  const [uploadMessage, setUploadMessage] = useState<string>("no error"); // upload API message
 
   const semesters = [
     { value: "1", label: "1" },
@@ -99,7 +112,22 @@ const UploadFile: FC = () => {
             { headers: headers }
           )
           .then((res) => {
-            setResponseMessage(res.data.message);
+            setUploadMessage(res.data.message);
+            console.log("upload status:", res.data.status);
+          })
+          .catch((error) => {
+            // console.log("upload status:", res.data.status);
+            // console.log("upload message:", res.data.message);
+            if (error.response) {
+              // Error response from server, access status code here
+              console.log("Error status:", error.response.status);
+            } else if (error.request) {
+              // The request was made but no response was received
+              console.log("No response received for the request");
+            } else {
+              // Something happened in setting up the request
+              console.log("Error", error.message);
+            }
           });
       }
 
@@ -111,11 +139,26 @@ const UploadFile: FC = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
+    console.log("file type:", typeof selectedFile);
+    console.log(selectedFile);
     if (selectedFile) {
       setFile(selectedFile);
       setFileName(selectedFile.name);
     }
   };
+
+  function handleFileChangeDropZone(file: any) {
+    //get array[0]'s object which is file we drop
+    const selectedFile = file[0];
+    if (selectedFile) {
+      console.log(selectedFile);
+      setFile(selectedFile);
+      setFileName(selectedFile.name);
+    }
+    // console.log("file type:", typeof file);
+    // console.log(file);
+    // console.log(file[0].name);
+  }
 
   // get auth info
   useEffect(() => {
@@ -201,104 +244,184 @@ const UploadFile: FC = () => {
         // style={{ backgroundColor: "#404040" }}
       >
         {/* box */}
-        <div
+        <section
           className="flex flex-col items-center w-11/12  border-1 border-black rounded-3xl"
           style={{
-            width: "700px",
+            width: "1200px",
             height: "600px",
             backgroundColor: "#202427",
           }}
         >
-          <section className="flex flex-col text-center mt-6 gap-y-2">
+          <div className="flex flex-col text-center mt-6 gap-y-2">
             <h1 className="text-2xl font-semibold">File Classifier</h1>
             <p className="text-xl">Make a quick summary!</p>
-          </section>
-          {/* file input section */}
-          <section className="flex flex-row mt-12 items-center">
-            <div>
-              <label
-                htmlFor="file-upload"
-                className="uploadfile-btn-style flex flex-row justify-center gap-x-3 items-center "
-                // style={{ backgroundColor: " EEEEEE" }}
-                // style={{ background: "#727CF5" }}
+          </div>
+          {/* file input and input fields */}
+          <div className="flex flex-row justify-evenly items-center  w-full h-full">
+            {/* file input section */}
+            <div className="flex flex-col mt-12 items-center">
+              <Dropzone
+                onDrop={(file: any) => {
+                  handleFileChangeDropZone(file);
+                }}
+                onReject={(files) => console.log("rejected files", files)}
+                maxSize={5 * 1024 ** 2}
+                accept={MS_EXCEL_MIME_TYPE}
+                {...props}
                 style={{
-                  border: "solid black 1px",
-                  backgroundColor: "#727cF5",
+                  backgroundColor: "#363636",
+                  borderRadius: "10px",
+                  borderColor: "gray",
                 }}
               >
-                <LuFileUp size={23} />
-                Choose File
-              </label>
-              <input
-                type="file"
-                id="file-upload"
-                style={{
-                  display: "none",
+                <Group
+                  justify="center"
+                  gap="xl"
+                  mih={220}
+                  style={{ pointerEvents: "none" }}
+                >
+                  <Dropzone.Accept>
+                    <IconUpload
+                      style={{
+                        width: rem(52),
+                        height: rem(52),
+                        color: "var(--mantine-color-blue-6)",
+                      }}
+                      stroke={1.5}
+                    />
+                  </Dropzone.Accept>
+                  <Dropzone.Reject>
+                    <IconX
+                      style={{
+                        width: rem(52),
+                        height: rem(52),
+                        color: "var(--mantine-color-red-6)",
+                      }}
+                      stroke={1.5}
+                    />
+                  </Dropzone.Reject>
+                  <Dropzone.Idle>
+                    <FiFilePlus
+                      style={{
+                        width: rem(52),
+                        height: rem(52),
+                        color: "black",
+                        strokeWidth: "1px",
+                      }}
+                    />
+                  </Dropzone.Idle>
+
+                  <div>
+                    <Text size="xl" inline>
+                      <p>Drag your file here or Browse</p>
+                    </Text>
+                    <Text size="sm" c="dimmed" inline mt={7}>
+                      (file should not exceed 1mb)
+                    </Text>
+                  </div>
+                </Group>
+              </Dropzone>
+              {/* <div>
+                <label
+                  htmlFor="file-upload"
+                  className="uploadfile-btn-style flex flex-row justify-center gap-x-3 items-center "
+                  // style={{ backgroundColor: " EEEEEE" }}
+                  // style={{ background: "#727CF5" }}
+                  style={{
+                    border: "solid black 1px",
+                    backgroundColor: "#727cF5",
+                  }}
+                >
+                  <LuFileUp size={23} />
+                  Choose File
+                </label>
+                <input
+                  type="file"
+                  id="file-upload"
+                  style={{
+                    display: "none",
+                  }}
+                  onChange={handleFileChange}
+                />
+              </div> */}
+              {/* file name box */}
+              <div className="flex flex-row items-center py-4 px-2 border-2 border-red-400 rounded-xl">
+                <PiMicrosoftExcelLogoFill size={32} />
+                <p
+                  className="filelabel-container whitespace-nowrap"
+                  style={{ borderColor: "gray", borderWidth: "0.5px" }}
+                >
+                  {fileName}
+                </p>
+
+                <Group>
+                  <p>xxx mb</p>
+                  <p>cancel</p>
+                </Group>
+              </div>
+            </div>
+            {/* input fields */}
+            <div className="flex flex-col gap-y-4 my-4">
+              <TextInput
+                // style={{
+                //   label: { color: "blue" },
+                //   input: { borderColor: "green", boderWidth: "5px" },
+                // }}
+                //   description="enters here"
+
+                radius="md"
+                label="Course Name"
+                placeholder="ex.Biology"
+                withAsterisk
+                value={courseName}
+                onChange={(event: any) =>
+                  setCourseName(event.currentTarget.value)
+                }
+              />
+              <TextInput
+                // className="flex flex-col gap-x-4"
+                radius="md"
+                //   description="enters here"
+                label="Course No"
+                placeholder="ex.261xxx"
+                withAsterisk
+                value={courseNo}
+                onChange={(event: any) => {
+                  const value = event.currentTarget.value;
+                  // Regular expression to match exactly 6 digits
+                  const regex = /^\d{0,6}$/;
+                  if (regex.test(value)) {
+                    setCourseNo(value);
+                  }
                 }}
-                onChange={handleFileChange}
+              />
+
+              <TextInput
+                // className="flex flex-col gap-x-4"
+                radius="md"
+                // description="must be 4 digits"
+                label="Academic Year"
+                placeholder="ex.2023"
+                withAsterisk
+                value={academicYear}
+                onChange={(event: any) =>
+                  setAcademicYear(event.currentTarget.value)
+                }
+              />
+
+              <Select
+                // className="flex flex-col gap-x-4"
+                radius="md"
+                label="Semester"
+                //   placeholder="....."
+                withAsterisk
+                data={semesters}
+                onSearchChange={(value: string) => setSemester(value)}
               />
             </div>
+          </div>
 
-            <p
-              className="filelabel-container whitespace-nowrap"
-              style={{ borderColor: "gray", borderWidth: "0.5px" }}
-            >
-              {fileName}
-            </p>
-          </section>
-          {/* input fields */}
-          <section className="flex flex-col gap-y-4 my-4">
-            <TextInput
-              className="flex flex-col gap-x-4"
-              //   description="enters here"
-              label="Course Name"
-              placeholder="ex.Biology"
-              withAsterisk
-              value={courseName}
-              onChange={(event: any) =>
-                setCourseName(event.currentTarget.value)
-              }
-            />
-            <TextInput
-              className="flex flex-col gap-x-4"
-              //   description="enters here"
-              label="Course No"
-              placeholder="ex.261xxx"
-              withAsterisk
-              value={courseNo}
-              onChange={(event: any) => {
-                const value = event.currentTarget.value;
-                // Regular expression to match exactly 6 digits
-                const regex = /^\d{0,6}$/;
-                if (regex.test(value)) {
-                  setCourseNo(value);
-                }
-              }}
-            />
-
-            <TextInput
-              className="flex flex-col gap-x-4"
-              // description="must be 4 digits"
-              label="Academic Year"
-              placeholder="ex.2023"
-              withAsterisk
-              value={academicYear}
-              onChange={(event: any) =>
-                setAcademicYear(event.currentTarget.value)
-              }
-            />
-
-            <Select
-              className="flex flex-col gap-x-4"
-              label="Semester"
-              //   placeholder="....."
-              withAsterisk
-              data={semesters}
-              onSearchChange={(value: string) => setSemester(value)}
-            />
-          </section>
-
-          {/* upload/view button section */}
+          {/* upload/view button */}
           <section className="flex flex-row justify-center items-center mt-8">
             {file === null ? (
               <button
@@ -330,7 +453,7 @@ const UploadFile: FC = () => {
               </div>
             )}
           </section>
-        </div>
+        </section>
       </div>
     </main>
   );

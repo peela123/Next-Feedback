@@ -163,3 +163,12 @@ body {
   font-weight: 600;
   line-height: normal;
 }
+
+.input {
+  outline: 2px solid red;
+  outline-offset: -2px;
+}
+
+.label {
+  color: "blue"
+}
