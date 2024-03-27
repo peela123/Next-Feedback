@@ -1,25 +1,32 @@
 import { useState, useEffect, FC } from "react";
 import { useRouter } from "next/router";
+import { redirect } from "next/navigation";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { WhoAmIResponse } from "./api/whoAmI";
 
 import readXlsxFile from "read-excel-file";
 
 import Navbar from "./components/Navbar";
-import { LuFileUp } from "react-icons/lu";
-import { Select } from "@mantine/core";
-import { TextInput } from "@mantine/core";
-import { IMaskInput } from "react-imask";
-import { Input } from "@mantine/core";
-import { error } from "console";
-import { Loader } from "@mantine/core";
-import { FileInput } from "@mantine/core";
+
 import { FiFilePlus } from "react-icons/fi";
-import { Stepper, Button } from "@mantine/core";
-import { Menu } from "@mantine/core";
+import { TiDeleteOutline } from "react-icons/ti";
 import { MdOutlineFilePresent } from "react-icons/md";
-import { redirect } from "next/navigation";
+import { LuFileUp } from "react-icons/lu";
+import { IMaskInput } from "react-imask";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
+import { MdOutlineClose } from "react-icons/md";
+
+import {
+  Stepper,
+  Button,
+  Avatar,
+  FileInput,
+  Loader,
+  Input,
+  TextInput,
+  Select,
+  Menu,
+} from "@mantine/core";
 
 // for dropzone UI
 import { Group, Text, rem } from "@mantine/core";
@@ -31,6 +38,9 @@ import {
   MS_EXCEL_MIME_TYPE,
 } from "@mantine/dropzone";
 
+// import classes from "./Demo.module.css";
+import classes from "../styles/Demo.module.css";
+
 const UploadFile: FC = (props: Partial<DropzoneProps>) => {
   const [semester, setSemester] = useState<string>("");
   const [academicYear, setAcademicYear] = useState<string>("");
@@ -38,7 +48,7 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
   const [courseNo, setCourseNo] = useState<string>("");
 
   const [file, setFile] = useState<File | null>(null); //current upload excel file
-  const [fileName, setFileName] = useState<string>("No file chosen...."); //current file name
+  const [fileName, setFileName] = useState<string>("no file...."); //current file name
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
@@ -160,6 +170,11 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
     // console.log(file[0].name);
   }
 
+  function handleCancleFile() {
+    setFile(null);
+    setFileName("No file chosen....");
+  }
+
   // get auth info
   useEffect(() => {
     //All cookies that belong to the current url will be sent with the request automatically
@@ -247,19 +262,20 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
         <section
           className="flex flex-col items-center w-11/12  border-1 border-black rounded-3xl"
           style={{
-            width: "1200px",
+            width: "90%",
             height: "600px",
             backgroundColor: "#202427",
           }}
         >
-          <div className="flex flex-col text-center mt-6 gap-y-2">
+          <section className="flex flex-col text-center mt-6 gap-y-2">
             <h1 className="text-2xl font-semibold">File Classifier</h1>
             <p className="text-xl">Make a quick summary!</p>
-          </div>
-          {/* file input and input fields */}
-          <div className="flex flex-row justify-evenly items-center  w-full h-full">
-            {/* file input section */}
-            <div className="flex flex-col mt-12 items-center">
+          </section>
+          {/* file input and input fields box*/}
+          <div className="flex flex-row justify-center items-center gap-x-12 w-full h-full">
+            {/* file input box */}
+            <section className="flex flex-col  items-center gap-y-4">
+              {/* drag file box */}
               <Dropzone
                 onDrop={(file: any) => {
                   handleFileChangeDropZone(file);
@@ -271,14 +287,20 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
                 style={{
                   backgroundColor: "#363636",
                   borderRadius: "10px",
-                  borderColor: "gray",
+                  height: "290px",
+                  // borderColor: "gray",
+                  border: "dashed 2px #2F4F4F",
                 }}
               >
                 <Group
                   justify="center"
                   gap="xl"
                   mih={220}
-                  style={{ pointerEvents: "none" }}
+                  style={{
+                    pointerEvents: "none",
+                    width: "350px",
+                    height: "250px",
+                  }}
                 >
                   <Dropzone.Accept>
                     <IconUpload
@@ -305,70 +327,83 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
                       style={{
                         width: rem(52),
                         height: rem(52),
-                        color: "black",
+                        color: "#CDCCDC",
                         strokeWidth: "1px",
+                        marginLeft: "auto",
+                        marginRight: "auto",
                       }}
                     />
-                  </Dropzone.Idle>
+                    <div className="flex flex-row items-center mx-auto">
+                      <Text size="xl" c="gray" inline>
+                        Drag your file here or
+                      </Text>
+                      <Text
+                        size="xl"
+                        c="#3CB371"
+                        style={{ paddingLeft: "6px" }}
+                      >
+                        Browse
+                      </Text>
+                    </div>
 
-                  <div>
-                    <Text size="xl" inline>
-                      <p>Drag your file here or Browse</p>
+                    <Text size="sm" c="dimmed" ta="center" inline mt={7}>
+                      {/* (file should not exceed 1mb) */}
+                      (Valid type are .csv, .xlsx)
                     </Text>
-                    <Text size="sm" c="dimmed" inline mt={7}>
-                      (file should not exceed 1mb)
-                    </Text>
-                  </div>
+                  </Dropzone.Idle>
                 </Group>
               </Dropzone>
-              {/* <div>
-                <label
-                  htmlFor="file-upload"
-                  className="uploadfile-btn-style flex flex-row justify-center gap-x-3 items-center "
-                  // style={{ backgroundColor: " EEEEEE" }}
-                  // style={{ background: "#727CF5" }}
-                  style={{
-                    border: "solid black 1px",
-                    backgroundColor: "#727cF5",
-                  }}
-                >
-                  <LuFileUp size={23} />
-                  Choose File
-                </label>
-                <input
-                  type="file"
-                  id="file-upload"
-                  style={{
-                    display: "none",
-                  }}
-                  onChange={handleFileChange}
-                />
-              </div> */}
+
               {/* file name box */}
-              <div className="flex flex-row items-center py-4 px-2 border-2 border-red-400 rounded-xl">
-                <PiMicrosoftExcelLogoFill size={32} />
-                <p
-                  className="filelabel-container whitespace-nowrap"
-                  style={{ borderColor: "gray", borderWidth: "0.5px" }}
-                >
-                  {fileName}
-                </p>
+              <div
+                className="flex flex-row justify-between items-center py-4 px-2 border-2 rounded-xl"
+                style={{
+                  borderColor: "#2F4F4F",
+                  width: "380px",
+                  height: "65px",
+                  backgroundColor: "#363636",
+                }}
+              >
+                <div className="flex flex-row items-center gap-x-4 ">
+                  <Avatar radius="sm" variant="filled" color="#1f2320">
+                    {file ? (
+                      <PiMicrosoftExcelLogoFill size={17} color="white" />
+                    ) : (
+                      <></>
+                    )}
+                  </Avatar>
 
-                <Group>
-                  <p>xxx mb</p>
-                  <p>cancel</p>
-                </Group>
+                  <div className="flex flex-col justify-center truncate">
+                    <p style={{ width: "260px" }}>{fileName}</p>
+
+                    {file ? <p>128 mb</p> : <></>}
+                  </div>
+                </div>
+
+                <MdOutlineClose
+                  size={32}
+                  color="red"
+                  className="transition-all duration-50 ease-in-out hover:scale-125"
+                  onClick={handleCancleFile}
+                />
               </div>
-            </div>
-            {/* input fields */}
-            <div className="flex flex-col gap-y-4 my-4">
+            </section>
+            {/* input fields box*/}
+            <section
+              className="flex flex-col gap-y-3 py-4 pl-5  rounded-xl"
+              style={{
+                backgroundColor: "#363636",
+                // borderColor: "#2F4F4F",
+                width: "300px",
+                height: "390px",
+              }}
+            >
+              <h1 className="text-white">Course Info</h1>
               <TextInput
-                // style={{
-                //   label: { color: "blue" },
-                //   input: { borderColor: "green", boderWidth: "5px" },
-                // }}
-                //   description="enters here"
-
+                style={{
+                  color: "#CDCCDC",
+                  width: "250px",
+                }}
                 radius="md"
                 label="Course Name"
                 placeholder="ex.Biology"
@@ -379,9 +414,11 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
                 }
               />
               <TextInput
-                // className="flex flex-col gap-x-4"
+                style={{
+                  color: "#CDCCDC",
+                  width: "250px",
+                }}
                 radius="md"
-                //   description="enters here"
                 label="Course No"
                 placeholder="ex.261xxx"
                 withAsterisk
@@ -397,9 +434,11 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
               />
 
               <TextInput
-                // className="flex flex-col gap-x-4"
+                style={{
+                  color: "#CDCCDC",
+                  width: "250px",
+                }}
                 radius="md"
-                // description="must be 4 digits"
                 label="Academic Year"
                 placeholder="ex.2023"
                 withAsterisk
@@ -410,23 +449,26 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
               />
 
               <Select
-                // className="flex flex-col gap-x-4"
+                style={{
+                  color: "#CDCCDC",
+                  width: "250px",
+                }}
                 radius="md"
                 label="Semester"
-                //   placeholder="....."
                 withAsterisk
                 data={semesters}
                 onSearchChange={(value: string) => setSemester(value)}
               />
-            </div>
+            </section>
           </div>
 
           {/* upload/view button */}
           <section className="flex flex-row justify-center items-center mt-8">
             {file === null ? (
               <button
-                className="border-2 border-black px-12 py-2 rounded bg-blue-400 hover:bg-blue-500"
-                onClick={handleUploadClick}
+                className="border-2 border-black px-12 py-2 rounded bg-blue-400 hover:bg-blue-500 transition-colors duration-200"
+                // onClick={handleUploadClick}
+                onClick={() => router.push("/Analyze")}
               >
                 <p className="text-xl font-semibold">View Analyze</p>
               </button>
@@ -438,7 +480,7 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
                   </Button>
                 ) : (
                   <button
-                    className="border-2 border-black px-6 py-2 rounded bg-lime-400 hover:bg-lime-500"
+                    className="border-2 border-black px-6 py-2 rounded bg-lime-600 hover:bg-lime-700 transition-colors duration-200"
                     onClick={handleUploadClick}
                   >
                     <p className="font-semibold text-base">Upload File</p>

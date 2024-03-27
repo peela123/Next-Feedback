@@ -184,12 +184,6 @@ const Analyze: FC = () => {
                 height: "93%",
                 width: "95%",
               }}
-              // style={{
-              //   backgroundColor: "#D9D9D9",
-
-              //   height: "93%",
-              //   width: "1200px",
-              // }}
             >
               <div className="rounded-lg  ml-6 my-4">
                 <p style={{ color: isDarkMode ? "#414141" : "#EFEFEF" }}>
@@ -198,14 +192,6 @@ const Analyze: FC = () => {
                 </p>
 
                 <div className="flex flex-row gap-x-4 w-full justify-between items-center">
-                  {/* <h1 className="text-xl">
-                    {`ความคิดเห็นทั้งหมด(${
-                      (teachingMethodComments?.length ?? 0) +
-                      (assessmentComments?.length ?? 0) +
-                      (contentComments?.length ?? 0)
-                    })`}
-                  </h1> */}
-
                   <h1
                     className="text-xl"
                     style={{ color: isDarkMode ? "#303030" : "#EFEFEF" }}
@@ -227,7 +213,6 @@ const Analyze: FC = () => {
                         default view
                       </p>
                     ) : (
-                      // <img src="public\sen-btn.png" />
                       <div className="flex flex-row justify-center items-center gap-x-2 transition-all duration-200 ease-in-out hover:scale-110">
                         <p>sentiment view</p>
                         <FaSearchPlus />
