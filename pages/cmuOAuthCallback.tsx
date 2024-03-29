@@ -35,7 +35,7 @@ export default function CMUOAuthCallback() {
           setMessage("Unknown error occurred. Please try again later.");
         }
       });
-  }, [code, router]);
+  }, [code]);
 
   // return <div className="p-3">{message || "Redirecting ..."}</div>;
   return <div className="p-3">{message || "Authenticating ..."}</div>;
