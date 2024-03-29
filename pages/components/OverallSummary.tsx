@@ -25,114 +25,126 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo, isDarkMode }) => {
 
   const [barData, setBarData] = useState<Data[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
+  const fetchData = () => {
+    try {
+      const response = axios
+        .get(
           `http://127.0.0.1:5000/api/user_course?cmuAccount=${cmuAccount}&courseNo=${courseNo}`
-        );
-        const courses: FetchedCourse[] = response.data;
-        setFetchedData(courses);
+        )
+        .then((res) => {
+          setFetchedData(res.data);
+          // Process the fetched data to calculate sentiments
+          const sentimentAnalysis = res.data.map((course: any) => {
+            let teachingMethodSentiment = {
+              Positive: 0,
+              Negative: 0,
+              Neutral: 0,
+            };
+            let assessmentSentiment = { Positive: 0, Negative: 0, Neutral: 0 };
+            let contentSentiment = { Positive: 0, Negative: 0, Neutral: 0 };
 
-        // Process the fetched data to calculate sentiments
-        const sentimentAnalysis = courses.map((course) => {
-          let teachingMethodSentiment = {
-            Positive: 0,
-            Negative: 0,
-            Neutral: 0,
-          };
-          let assessmentSentiment = { Positive: 0, Negative: 0, Neutral: 0 };
-          let contentSentiment = { Positive: 0, Negative: 0, Neutral: 0 };
+            course.teachingMethodComments.forEach((comment: Comment) => {
+              teachingMethodSentiment[comment.sentiment]++;
+            });
 
-          course.teachingMethodComments.forEach((comment) => {
-            teachingMethodSentiment[comment.sentiment]++;
+            course.assessmentComments.forEach((comment: Comment) => {
+              assessmentSentiment[comment.sentiment]++;
+            });
+
+            course.contentComments.forEach((comment: Comment) => {
+              contentSentiment[comment.sentiment]++;
+            });
+
+            return {
+              teachingMethodSentiment,
+              assessmentSentiment,
+              contentSentiment,
+            };
           });
 
-          course.assessmentComments.forEach((comment) => {
-            assessmentSentiment[comment.sentiment]++;
-          });
+          // Initialize barData format
+          const newBarData: Data[] = [
+            {
+              data: sentimentAnalysis.map(
+                (a: any) => a.teachingMethodSentiment.Positive
+              ),
+              stack: "A",
+              label: "Positive",
+              color: "#4CAF50",
+            },
+            {
+              data: sentimentAnalysis.map(
+                (a: any) => a.teachingMethodSentiment.Negative
+              ),
+              stack: "A",
+              label: "Negative",
+              color: "#F44336",
+            },
+            {
+              data: sentimentAnalysis.map(
+                (a: any) => a.teachingMethodSentiment.Neutral
+              ),
+              stack: "A",
+              label: "Neutral",
+              color: "#8b8b8b",
+            },
+            {
+              data: sentimentAnalysis.map(
+                (a: any) => a.assessmentSentiment.Positive
+              ),
+              stack: "B",
+              // label: "AM Positive",
+              color: "#4CAF50",
+            },
+            {
+              data: sentimentAnalysis.map(
+                (a: any) => a.assessmentSentiment.Negative
+              ),
+              stack: "B",
+              // label: "Negative",
+              color: "#F44336",
+            },
+            {
+              data: sentimentAnalysis.map(
+                (a: any) => a.assessmentSentiment.Neutral
+              ),
+              stack: "B",
+              // label: "Neutral",
+              color: "#8b8b8b",
+            },
+            {
+              data: sentimentAnalysis.map(
+                (a: any) => a.contentSentiment.Positive
+              ),
+              stack: "C",
+              // label: "Positive",
+              color: "#4CAF50",
+            },
+            {
+              data: sentimentAnalysis.map(
+                (a: any) => a.contentSentiment.Negative
+              ),
+              stack: "C",
+              // label: "Negative",
+              color: "#F44336",
+            },
+            {
+              data: sentimentAnalysis.map(
+                (a: any) => a.contentSentiment.Neutral
+              ),
+              stack: "C",
+              // label: "Neutral",
+              color: "#8b8b8b",
+            },
+          ];
 
-          course.contentComments.forEach((comment) => {
-            contentSentiment[comment.sentiment]++;
-          });
-
-          return {
-            teachingMethodSentiment,
-            assessmentSentiment,
-            contentSentiment,
-          };
+          setBarData(newBarData);
         });
-
-        // Initialize barData format
-        const newBarData: Data[] = [
-          {
-            data: sentimentAnalysis.map(
-              (a) => a.teachingMethodSentiment.Positive
-            ),
-            stack: "A",
-            label: "Positive",
-            color: "#4CAF50",
-          },
-          {
-            data: sentimentAnalysis.map(
-              (a) => a.teachingMethodSentiment.Negative
-            ),
-            stack: "A",
-            label: "Negative",
-            color: "#F44336",
-          },
-          {
-            data: sentimentAnalysis.map(
-              (a) => a.teachingMethodSentiment.Neutral
-            ),
-            stack: "A",
-            label: "Neutral",
-            color: "#8b8b8b",
-          },
-          {
-            data: sentimentAnalysis.map((a) => a.assessmentSentiment.Positive),
-            stack: "B",
-            // label: "AM Positive",
-            color: "#4CAF50",
-          },
-          {
-            data: sentimentAnalysis.map((a) => a.assessmentSentiment.Negative),
-            stack: "B",
-            // label: "Negative",
-            color: "#F44336",
-          },
-          {
-            data: sentimentAnalysis.map((a) => a.assessmentSentiment.Neutral),
-            stack: "B",
-            // label: "Neutral",
-            color: "#8b8b8b",
-          },
-          {
-            data: sentimentAnalysis.map((a) => a.contentSentiment.Positive),
-            stack: "C",
-            // label: "Positive",
-            color: "#4CAF50",
-          },
-          {
-            data: sentimentAnalysis.map((a) => a.contentSentiment.Negative),
-            stack: "C",
-            // label: "Negative",
-            color: "#F44336",
-          },
-          {
-            data: sentimentAnalysis.map((a) => a.contentSentiment.Neutral),
-            stack: "C",
-            // label: "Neutral",
-            color: "#8b8b8b",
-          },
-        ];
-
-        setBarData(newBarData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [cmuAccount, courseNo]);
 
