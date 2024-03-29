@@ -390,12 +390,16 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
                   </div>
                 </div>
 
-                <MdOutlineClose
-                  size={32}
-                  color="red"
-                  className="transition-all duration-50 ease-in-out hover:scale-125"
-                  onClick={handleCancleFile}
-                />
+                {file === null ? (
+                  <></>
+                ) : (
+                  <MdOutlineClose
+                    size={32}
+                    color="red"
+                    className="transition-all duration-150 ease-in-out hover:scale-125"
+                    onClick={handleCancleFile}
+                  />
+                )}
               </div>
             </section>
             {/* input fields box*/}
@@ -434,8 +438,8 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
                 withAsterisk
                 value={courseNo}
                 onChange={(event: any) => {
+                  // use regEx validate courseNo
                   const value = event.currentTarget.value;
-                  // Regular expression to match exactly 6 digits
                   const regex = /^\d{0,6}$/;
                   if (regex.test(value)) {
                     setCourseNo(value);
@@ -453,9 +457,14 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
                 placeholder="ex.2023"
                 withAsterisk
                 value={academicYear}
-                onChange={(event: any) =>
-                  setAcademicYear(event.currentTarget.value)
-                }
+                onChange={(event: any) => {
+                  // setAcademicYear(event.currentTarget.value)
+                  const value = event.currentTarget.value;
+                  const regex = /^\d{0,4}$/;
+                  if (regex.test(value)) {
+                    setAcademicYear(value);
+                  }
+                }}
               />
 
               <Select

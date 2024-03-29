@@ -14,11 +14,18 @@ import {
   Button,
 } from "@mantine/core";
 import "@mantine/dropzone/styles.css";
+import { BarChart } from "@mantine/charts";
 
 import { NextUIProvider } from "@nextui-org/react";
 
 const theme = createTheme({
   components: {
+    BarChart: BarChart.extend({
+      styles: {
+        bar: { backgroundColor: "black" },
+        root: { color: "yello", width: "20px" },
+      },
+    }),
     TextInput: TextInput.extend({
       styles: {
         // label: { color: "blue" },

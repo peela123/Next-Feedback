@@ -4,6 +4,8 @@ import { FetchedCourse, Comment } from "../../types/CommentType";
 import axios from "axios";
 
 import { BarChart } from "@mui/x-charts/BarChart";
+import { Avatar } from "@mantine/core";
+import { LuPercent } from "react-icons/lu";
 
 interface Props {
   cmuAccount: string;
@@ -144,13 +146,13 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo, isDarkMode }) => {
         backgroundColor: isDarkMode === true ? "#efefef" : " #404040",
         color: "#9d9d9d",
         width: "100%",
-        height: "54.5%",
+        height: "56.5%",
         boxSizing: "border-box",
       }}
       className="flex flex-col rounded overflow-auto "
     >
       <h1
-        className=" mx-auto mt-2 font-semibold text-gray-300"
+        className="font-semibold text-gray-300 text-center mt-2"
         style={{ color: isDarkMode ? "#414141" : "" }}
       >
         Course Overall Summary
@@ -162,7 +164,7 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo, isDarkMode }) => {
             // dataset={dataset}
 
             series={barData}
-            height={330}
+            height={335}
             width={1700}
             margin={
               {
@@ -189,7 +191,7 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo, isDarkMode }) => {
 
                 data: sample,
                 // dataKey: "year",
-                id: "semester",
+                // id: "semester",
                 label: "semester",
               },
             ]}
@@ -213,13 +215,11 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo, isDarkMode }) => {
               },
               // { id: "logAxis", scaleType: "log" },
             ]}
-            // leftAxis="linearAxis"
-            // legend
             slotProps={{
               legend: {
                 direction: "row",
                 position: { vertical: "top", horizontal: "right" },
-                padding: 10,
+                padding: 13,
               },
             }}
           />

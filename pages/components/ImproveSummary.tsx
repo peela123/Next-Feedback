@@ -2,15 +2,12 @@ import { FC, useEffect, useState } from "react";
 import axios from "axios";
 import { FetchedCourse, Comment } from "../../types/CommentType";
 
-// import { FetchedCourse, Comment } from "../../types/CommentType";
-
-import { BarChart } from "@mantine/charts";
-import { Sparkline } from "@mantine/charts";
 import { Stack, Text } from "@mantine/core";
-import { AreaChart } from "@mantine/charts";
-import { LineChart } from "@mantine/charts";
+import { AreaChart, LineChart, BarChart, Sparkline } from "@mantine/charts";
 import { count } from "console";
 import { headers } from "next/headers";
+import { Avatar } from "@mantine/core";
+import { LuPercent } from "react-icons/lu";
 
 interface Props {
   cmuAccount: string;
@@ -27,6 +24,8 @@ interface Data {
 
 const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo, isDarkMode }) => {
   const [fetchedData, setFetchedData] = useState<FetchedCourse[]>([]);
+
+  const [isPercent, setIsPercent] = useState<boolean>(false);
 
   const countSentiment = (arr: Comment[], option: string): number => {
     let pos = 0,
@@ -92,36 +91,64 @@ const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo, isDarkMode }) => {
       className=" rounded flex flex-col"
       style={{
         backgroundColor: isDarkMode === true ? "#efefef" : " #404040",
-        height: "42%",
+        height: "40%",
         width: "100%",
         // backgroundColor: "#404040",
         color: "#9d9d9d",
       }}
     >
-      <h1
-        className="mx-auto mt-2 font-semibold text-gray-300"
-        style={{ color: isDarkMode ? "#414141" : "" }}
-      >
-        Historical Statistic
-      </h1>
+      <div className="flex flex-row justify-center items-center mt-3 ">
+        <h1
+          className="font-semibold text-gray-300 fixed"
+          style={{ color: isDarkMode ? "#414141" : "" }}
+        >
+          Historical Statistic
+        </h1>
+        <button
+          style={{ marginLeft: "1050px" }}
+          className="hover: transition-all duration-200 ease-in-out hover:scale-110"
+          onClick={() => setIsPercent(!isPercent)}
+        >
+          <Avatar variant="filled" color="#737373" size="2rem" radius="sm">
+            <LuPercent color="white" size={16} />
+          </Avatar>
+        </button>
+      </div>
       <div className="grow flex flex-row ">
         {fetchedData.length > 0 ? (
-          <LineChart
-            style={{ width: "95%", flexGrow: "0" }}
-            color="rgba(207, 190, 190, 1)"
-            data={prepareData}
-            dataKey="semesterNYear"
-            series={[
-              { name: "Positive", color: "#51aa55" },
-              { name: "Negative", color: "#e8493e" },
-              { name: "Neutral", color: "#8a8a8a" },
-            ]}
-            curveType="linear"
-            tickLine="y"
-            gridAxis="y"
-            withLegend
-            // withGradient={false}
-          />
+          isPercent ? (
+            <BarChart
+              h={210}
+              style={{ width: "95%", flexGrow: "0" }}
+              data={prepareData}
+              dataKey="semesterNYear"
+              type="percent"
+              withLegend
+              legendProps={{ verticalAlign: "top", height: 35 }}
+              series={[
+                { name: "Positive", color: "#51aa55" },
+                { name: "Negative", color: "#e8493e" },
+                { name: "Neutral", color: "#8a8a8a" },
+              ]}
+            />
+          ) : (
+            <LineChart
+              style={{ width: "95%", flexGrow: "0" }}
+              color="rgba(207, 190, 190, 1)"
+              data={prepareData}
+              dataKey="semesterNYear"
+              series={[
+                { name: "Positive", color: "#51aa55" },
+                { name: "Negative", color: "#e8493e" },
+                { name: "Neutral", color: "#8a8a8a" },
+              ]}
+              curveType="linear"
+              tickLine="x"
+              gridAxis="xy"
+              withLegend
+              // withGradient={false}
+            />
+          )
         ) : (
           <div className="mx-auto my-auto">No data available</div>
         )}

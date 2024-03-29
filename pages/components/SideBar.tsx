@@ -12,11 +12,19 @@ import { GrNotes } from "react-icons/gr";
 import { TiDeleteOutline } from "react-icons/ti";
 import { IoChevronDownSharp } from "react-icons/io5";
 
-import { ScrollArea } from "@mantine/core";
-import { Alert } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { Switch } from "@mantine/core";
-import { Modal, Group, Button, Text, Select, Menu, Badge } from "@mantine/core";
+import {
+  Modal,
+  Group,
+  Button,
+  Text,
+  Select,
+  Menu,
+  Badge,
+  Alert,
+  ScrollArea,
+} from "@mantine/core";
 import { useDisclosure, useCounter } from "@mantine/hooks";
 
 import { FetchedCourse, Comment } from "../../types/CommentType";
@@ -208,20 +216,28 @@ const SideBar: FC<Props> = ({
                         marginRight: "5px",
                       }}
                       className="w-1/12 transition-all duration-100 ease-in-out hover:scale-125"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const isConfirmed = window.confirm(
-                          "Are you sure you want to delete this feedback?"
-                        );
-                        if (isConfirmed) {
-                          handleDeleteFeedback(
-                            cmuAccount,
-                            course.academicYear,
-                            course.semester,
-                            course.courseNo
-                          );
-                        }
-                      }}
+                      // onClick={(e) => {
+                      //   e.stopPropagation();
+                      //   const isConfirmed = window.confirm(
+                      //     "Are you sure you want to delete this feedback?"
+                      //   );
+                      //   if (isConfirmed) {
+                      //     handleDeleteFeedback(
+                      //       cmuAccount,
+                      //       course.academicYear,
+                      //       course.semester,
+                      //       course.courseNo
+                      //     );
+                      //   }
+                      // }}
+                      onClick={() =>
+                        handleDeleteFeedback(
+                          cmuAccount,
+                          course.academicYear,
+                          course.semester,
+                          course.courseNo
+                        )
+                      }
                     />
                   </button>
                 ))}

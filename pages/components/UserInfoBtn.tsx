@@ -60,14 +60,14 @@ const UserInfoBtn: FC<Props> = ({ haveDropDown }) => {
           borderRadius: "3px",
         }}
       >
-        <Menu.Item
+        {/* <Menu.Item
           leftSection={<CgProfile style={{ width: "14px", height: "14px" }} />}
           // color="rgba(196, 179, 179, 1)"
 
           color="white"
         >
           profile
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item
           leftSection={<GoGraph style={{ width: "14px", height: "14px" }} />}
           onClick={() => router.push("/Analyze")}

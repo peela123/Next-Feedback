@@ -40,6 +40,7 @@ const Analyze: FC = () => {
 
   const [isSummarize, setIsSummarize] = useState<boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+
   const toggleSummarize = () => {
     setIsSummarize((prevIsSummarize) => !prevIsSummarize);
   };
@@ -149,17 +150,17 @@ const Analyze: FC = () => {
 
         {/* right side container*/}
         <div
-          className="flex flex-row grow h-full w-10/12 justify-center items-center"
+          className="flex flex-row w-10/12 h-full justify-center items-center"
           // style={{ backgroundColor: "#7C6B6B" }}
           style={{ backgroundColor: isDarkMode ? "#EFEFEF" : "#292929" }}
         >
           {isSummarize ? (
             // summarize box
             <section
-              className="flex flex-col justify-between mt-6 ml-6 rounded"
+              className="flex flex-col rounded-xl"
               style={{
                 height: "93%",
-                width: "1200px",
+                width: "95%",
                 border: isDarkMode ? "solid #D3D3D3 3px" : "",
                 backgroundColor: isDarkMode ? "#D9D9D9" : "#363636",
               }}
