@@ -25,7 +25,7 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo, isDarkMode }) => {
 
   const [barData, setBarData] = useState<Data[]>([]);
 
-  const fetchData = () => {
+  useEffect(() => {
     try {
       const response = axios
         .get(
@@ -143,9 +143,6 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo, isDarkMode }) => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
-  useEffect(() => {
-    fetchData();
   }, [cmuAccount, courseNo]);
 
   const sample = fetchedData.map((course) => {
