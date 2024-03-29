@@ -141,12 +141,21 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
             }
           });
         // cloud deploy version
-        // const res = await axios
-        //   .post(`http://127.0.0.1:5000/api/ml_result`, jsonRequestData, {
-        //     headers: headers,
-        //   })
+        // const response = await axios
+        //   .post(
+        //     `http://127.0.0.1:5000/api/ml_result?courseName=${courseName.trim()}&courseNo=${parseInt(
+        //       courseNo,
+        //       10
+        //     )}&semester=${semester}&academicYear=${parseInt(academicYear, 10)}`,
+        //     jsonRequestData,
+        //     { headers: headers }
+        //   )
         //   .then((res) => {
-        //     console.log("send from frontend to backend success");
+        //     setUploadMessage(res.data.message);
+        //     console.log("upload status:", res.data.error);
+        //   })
+        //   .catch((error) => {
+        //     console.error("error:", error);
         //   });
       }
 

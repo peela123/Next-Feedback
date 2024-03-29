@@ -8,8 +8,8 @@ export function middleware(request: NextRequest) {
   const protectedPaths = [
     "/Analyze",
     "/UploadFile",
-    "/me",
-    "/cmuOAuthCallback",
+    // "/me",
+    // "/cmuOAuthCallback",
   ];
 
   const url = request.nextUrl.clone(); // Clone the URL object to modify it
