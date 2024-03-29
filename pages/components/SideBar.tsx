@@ -135,7 +135,7 @@ const SideBar: FC<Props> = ({
               .map((course: FetchedCourse, index: number) => (
                 <button
                   key={index}
-                  className="sidebarsub-btn-style hover:bg-neutral-500"
+                  className="sidebarsub-btn-style w-full text-nowrap px-4 overflow-hidden hover:bg-neutral-500"
                   style={{
                     backgroundColor:
                       selectedCourseNo === course.courseNo ? "#727877 " : "",
@@ -168,7 +168,7 @@ const SideBar: FC<Props> = ({
                 .map((course: FetchedCourse, index: number) => (
                   <button
                     key={index}
-                    className="sidebarsub-btn-style flex flex-row justify-bertween items-center  hover:bg-neutral-500 "
+                    className="sidebarsub-btn-style flex flex-row justify-center items-center hover:bg-neutral-500 "
                     style={{
                       backgroundColor:
                         selectedCourseNo === course.courseNo &&
@@ -193,13 +193,20 @@ const SideBar: FC<Props> = ({
                       setSelectedSemester(course.semester); // Set the selected semester
                     }}
                   >
-                    <p className="text-left w-11/12 truncate ">
+                    <p
+                      className="w-11/12 truncate"
+                      title={`Year ${course.academicYear} Term ${course.semester} (${course.responseCount})`}
+                    >
                       {" "}
                       {`Year ${course.academicYear} Term ${course.semester} (${course.responseCount})`}
                     </p>
                     <TiDeleteOutline
-                      color={"red"}
-                      style={{ width: "24px", height: "24px" }}
+                      style={{
+                        width: "24px",
+                        height: "24px",
+                        color: "red",
+                        marginRight: "5px",
+                      }}
                       className="w-1/12 transition-all duration-100 ease-in-out hover:scale-125"
                       onClick={(e) => {
                         e.stopPropagation();

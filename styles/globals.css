@@ -26,15 +26,18 @@ body {
   background-color: #565656;
   border-radius: 5px;
   height: 31px;
-  width: 100%;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  /* max-width: 220px; */
-
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  text-align: center;
+  max-width: 240px;
 }
+
+/* .sidebar-subfeedback-btn {
+  display
+  background-color: #565656;
+  border-radius: 5px;
+  height: 31px;
+  text-align: center;
+  max-width: 240px;
+} */
 
 
 .analyze-btn-style {

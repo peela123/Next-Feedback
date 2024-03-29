@@ -8,6 +8,7 @@ import { BarChart } from "@mui/x-charts/BarChart";
 interface Props {
   cmuAccount: string;
   courseNo: number | undefined;
+  isDarkMode: boolean;
 }
 interface Data {
   data: number[];
@@ -17,7 +18,7 @@ interface Data {
   dataKey?: string;
 }
 
-const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
+const OverallSummary: FC<Props> = ({ cmuAccount, courseNo, isDarkMode }) => {
   const [fetchedData, setFetchedData] = useState<FetchedCourse[]>([]);
 
   const [barData, setBarData] = useState<Data[]>([]);
@@ -140,22 +141,23 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
   return (
     <section
       style={{
-        backgroundColor: "#404040",
+        backgroundColor: isDarkMode === true ? "#efefef" : " #404040",
         color: "#9d9d9d",
         width: "100%",
-        // height: "54.5%",
+        height: "54.5%",
         boxSizing: "border-box",
       }}
       className="flex flex-col rounded overflow-auto "
     >
-      <h1 className=" mx-auto font-semibold text-gray-300">
+      <h1
+        className=" mx-auto mt-2 font-semibold text-gray-300"
+        style={{ color: isDarkMode ? "#414141" : "" }}
+      >
         Course Overall Summary
       </h1>
 
-      <div className="flex flex-row grow  overflow-x-hidden overflow-y-hidden ">
+      <div className="flex flex-row grow overflow-x-hidden overflow-y-hidden ">
         {fetchedData.length > 0 ? (
-          <div>no data available</div>
-        ) : (
           <BarChart
             // dataset={dataset}
 
@@ -175,10 +177,10 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
               {
                 labelStyle: {
                   fontSize: 20,
-                  fill: "rgb(209 213 219)",
+                  fill: isDarkMode ? "black" : "rgb(209 213 219)",
                 },
                 tickLabelStyle: {
-                  fill: "rgb(209 213 219)",
+                  fill: isDarkMode ? "black" : "rgb(209 213 219)",
                   angle: 0,
                   textAnchor: "start",
                   fontSize: 15,
@@ -193,13 +195,20 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
             ]}
             yAxis={[
               {
+                tickLabelStyle: {
+                  fill: "black",
+                  angle: 0,
+                  // textAnchor: "start",
+                  fontSize: 15,
+                },
                 id: "linearAxis",
                 scaleType: "linear",
                 label: "#unit",
+
                 labelStyle: {
                   fontSize: 18,
 
-                  fill: "rgb(209 213 219)",
+                  fill: isDarkMode ? "black" : "rgb(209 213 219)",
                 },
               },
               // { id: "logAxis", scaleType: "log" },
@@ -214,6 +223,8 @@ const OverallSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
               },
             }}
           />
+        ) : (
+          <div className="mx-auto my-auto">no data available</div>
         )}
       </div>
     </section>

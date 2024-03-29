@@ -15,6 +15,7 @@ import { headers } from "next/headers";
 interface Props {
   cmuAccount: string;
   courseNo: number | undefined;
+  isDarkMode: boolean;
 }
 
 interface Data {
@@ -24,7 +25,7 @@ interface Data {
   Neutral: number;
 }
 
-const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
+const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo, isDarkMode }) => {
   const [fetchedData, setFetchedData] = useState<FetchedCourse[]>([]);
 
   const countSentiment = (arr: Comment[], option: string): number => {
@@ -90,13 +91,17 @@ const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
     <section
       className=" rounded flex flex-col"
       style={{
+        backgroundColor: isDarkMode === true ? "#efefef" : " #404040",
         height: "42%",
         width: "100%",
-        backgroundColor: "#404040",
+        // backgroundColor: "#404040",
         color: "#9d9d9d",
       }}
     >
-      <h1 className="mx-auto font-semibold text-gray-300">
+      <h1
+        className="mx-auto mt-2 font-semibold text-gray-300"
+        style={{ color: isDarkMode ? "#414141" : "" }}
+      >
         Historical Statistic
       </h1>
       <div className="grow flex flex-row ">
@@ -118,9 +123,7 @@ const ImproveSummary: FC<Props> = ({ cmuAccount, courseNo }) => {
             // withGradient={false}
           />
         ) : (
-          <div className="flex flex-row w-full  justify-center items-center">
-            No data available
-          </div>
+          <div className="mx-auto my-auto">No data available</div>
         )}
       </div>
     </section>

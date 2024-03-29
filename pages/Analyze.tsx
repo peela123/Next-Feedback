@@ -154,58 +154,74 @@ const Analyze: FC = () => {
           style={{ backgroundColor: isDarkMode ? "#EFEFEF" : "#292929" }}
         >
           {isSummarize ? (
-            // summarize container
+            // summarize box
             <section
               className="flex flex-col justify-between mt-6 ml-6 rounded"
               style={{
                 height: "93%",
                 width: "1200px",
-                backgroundColor: "#363636",
+                border: isDarkMode ? "solid #D3D3D3 3px" : "",
+                backgroundColor: isDarkMode ? "#D9D9D9" : "#363636",
               }}
             >
-              <div className="rounded-lg w-fit ml-6 my-4">
-                {/* <p style={{ color: "#414141" }} className="text-xl "> */}
-                <p className="text-xl text-white">
-                  กระบวนวิชา:{" "}
-                  {courseName === "" ? "ยังไม่ได้เลือกวิชา" : courseName}
-                </p>
-              </div>
+              {/* <p style={{ color: "#414141" }} className="text-xl "> */}
+              <p
+                className="w-fit ml-6 my-4 text-xl "
+                style={{ color: isDarkMode ? "black" : "white" }}
+              >
+                กระบวนวิชา:{" "}
+                {courseName === "" ? "ยังไม่ได้เลือกวิชา" : courseName}
+              </p>
+
               <div className="grow flex flex-col justify-between">
-                <ImproveSummary cmuAccount={cmuAccount} courseNo={courseNo} />
-                <OverallSummary cmuAccount={cmuAccount} courseNo={courseNo} />
+                <ImproveSummary
+                  cmuAccount={cmuAccount}
+                  courseNo={courseNo}
+                  isDarkMode={isDarkMode}
+                />
+                <OverallSummary
+                  cmuAccount={cmuAccount}
+                  courseNo={courseNo}
+                  isDarkMode={isDarkMode}
+                />
               </div>
             </section>
           ) : (
             // feedback box
             <section
-              className="flex flex-col rounded-xl"
+              className="flex flex-col rounded-xl "
               style={{
                 backgroundColor: isDarkMode ? "#D9D9D9" : "#363636",
                 height: "93%",
                 width: "95%",
+                border: isDarkMode ? "solid #D3D3D3 3px" : "",
               }}
             >
-              <div className="rounded-lg  ml-6 my-4">
-                <p style={{ color: isDarkMode ? "#414141" : "#EFEFEF" }}>
+              {/* feedback header box */}
+              <section className="rounded-lg  ml-6 my-4">
+                <h1
+                  style={{ color: isDarkMode ? "black" : "#EFEFEF" }}
+                  className="text-xl"
+                >
                   ปีการศึกษา {academicYear} ภาคเรียนที่ {semester} กระบวนวิชา{" "}
                   {courseName}
-                </p>
+                </h1>
 
                 <div className="flex flex-row gap-x-4 w-full justify-between items-center">
-                  <h1
-                    className="text-xl"
+                  <p
                     style={{ color: isDarkMode ? "#303030" : "#EFEFEF" }}
+                    className="text-lg"
                   >
                     {`ความคิดเห็นทั้งหมด(${
                       (teachingMethodComments?.length ?? 0) +
                       (assessmentComments?.length ?? 0) +
                       (contentComments?.length ?? 0)
                     })`}
-                  </h1>
+                  </p>
 
                   <button
                     onClick={handleSentimentView}
-                    className="gap-x-4 rounded mr-12 bg-gray-400 hover:bg-gray-300"
+                    className="gap-x-4 rounded mr-12 bg-gray-400 "
                     style={{ width: "150px" }}
                   >
                     {isSentimentView ? (
@@ -220,16 +236,16 @@ const Analyze: FC = () => {
                     )}
                   </button>
                 </div>
-              </div>
-              {/* feedback container */}
-              <div
+              </section>
+              {/* feedback label box */}
+              <section
                 className="overflow-auto rounded-lg pl-8 pt-2 w-full h-full"
                 style={{
                   backgroundColor: isDarkMode ? "#EFEFEF" : "#404040",
                   color: isDarkMode ? "black" : "#EFEFEF",
                 }}
               >
-                <section>
+                <div>
                   <h1 className="summary-text-style mb-1">
                     Teaching Method ({teachingMethodComments?.length ?? 0})
                   </h1>
@@ -251,7 +267,7 @@ const Analyze: FC = () => {
                       )
                     )}
                   </ul>
-                </section>
+                </div>
                 <section>
                   <h1 className="summary-text-style mb-1">
                     Assessment ({assessmentComments?.length ?? 0})
@@ -296,7 +312,7 @@ const Analyze: FC = () => {
                     ))}
                   </ul>
                 </section>
-              </div>
+              </section>
             </section>
           )}
         </div>

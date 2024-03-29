@@ -49,6 +49,7 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
 
   const [file, setFile] = useState<File | null>(null); //current upload excel file
   const [fileName, setFileName] = useState<string>("no file...."); //current file name
+  const [fileSize, setFileSize] = useState<number>();
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
@@ -139,6 +140,14 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
               console.log("Error", error.message);
             }
           });
+        // cloud deploy version
+        // const res = await axios
+        //   .post(`http://127.0.0.1:5000/api/ml_result`, jsonRequestData, {
+        //     headers: headers,
+        //   })
+        //   .then((res) => {
+        //     console.log("send from frontend to backend success");
+        //   });
       }
 
       router.push("/Analyze");
@@ -164,6 +173,7 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
       console.log(selectedFile);
       setFile(selectedFile);
       setFileName(selectedFile.name);
+      setFileSize(selectedFile.size / 1000);
     }
     // console.log("file type:", typeof file);
     // console.log(file);
@@ -376,7 +386,7 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
                   <div className="flex flex-col justify-center truncate">
                     <p style={{ width: "260px" }}>{fileName}</p>
 
-                    {file ? <p>128 mb</p> : <></>}
+                    {file ? <p>{fileSize} kb</p> : <></>}
                   </div>
                 </div>
 
@@ -463,10 +473,10 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
           </div>
 
           {/* upload/view button */}
-          <section className="flex flex-row justify-center items-center mt-8">
+          <section className="mx-auto  mb-6">
             {file === null ? (
               <button
-                className="border-2 border-black px-12 py-2 rounded bg-blue-400 hover:bg-blue-500 transition-colors duration-200"
+                className="w-48 h-12 py-2 px-8 border-2 border-black rounded-xl bg-blue-500 hover:bg-blue-600 transition-colors duration-200"
                 // onClick={handleUploadClick}
                 onClick={() => router.push("/Analyze")}
               >
@@ -480,10 +490,10 @@ const UploadFile: FC = (props: Partial<DropzoneProps>) => {
                   </Button>
                 ) : (
                   <button
-                    className="border-2 border-black px-6 py-2 rounded bg-lime-600 hover:bg-lime-700 transition-colors duration-200"
+                    className="w-48 h-12 py-2 px-8  border-2 border-black rounded-xl bg-lime-600 hover:bg-lime-700 transition-colors duration-200"
                     onClick={handleUploadClick}
                   >
-                    <p className="font-semibold text-base">Upload File</p>
+                    <p className="text-xl font-semibold">Upload File</p>
                   </button>
                 )}
 
