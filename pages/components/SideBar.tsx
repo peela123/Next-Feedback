@@ -134,27 +134,28 @@ const SideBar: FC<Props> = ({
               <IoChevronDownSharp size={25} color={"white"} className="ml-16" />
             </button>
             {/*sub course button*/}
-            {fetchedCourse
-              .filter(
-                (course, index, self) =>
-                  index ===
-                  self.findIndex((c) => c.courseName === course.courseName)
-              )
-              .map((course: FetchedCourse, index: number) => (
-                <button
-                  key={index}
-                  className="sidebarsub-btn-style w-full text-nowrap px-4 overflow-hidden hover:bg-neutral-500"
-                  style={{
-                    backgroundColor:
-                      selectedCourseNo === course.courseNo ? "#727877 " : "",
-                  }}
-                  onClick={() => {
-                    setSelectedCourseNo(course.courseNo || null);
-                  }}
-                >
-                  {`${course.courseNo || ""} ${course.courseName || ""}`}
-                </button>
-              ))}
+            {fetchedCourse &&
+              fetchedCourse
+                .filter(
+                  (course, index, self) =>
+                    index ===
+                    self.findIndex((c) => c.courseName === course.courseName)
+                )
+                .map((course: FetchedCourse, index: number) => (
+                  <button
+                    key={index}
+                    className="sidebarsub-btn-style w-full text-nowrap px-4 overflow-hidden hover:bg-neutral-500"
+                    style={{
+                      backgroundColor:
+                        selectedCourseNo === course.courseNo ? "#727877 " : "",
+                    }}
+                    onClick={() => {
+                      setSelectedCourseNo(course.courseNo || null);
+                    }}
+                  >
+                    {`${course.courseNo || ""} ${course.courseName || ""}`}
+                  </button>
+                ))}
           </section>
 
           {/* feedback section*/}
