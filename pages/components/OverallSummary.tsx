@@ -4,8 +4,6 @@ import { FetchedCourse, Comment } from "../../types/CommentType";
 import axios from "axios";
 
 import { BarChart } from "@mui/x-charts/BarChart";
-import { Avatar } from "@mantine/core";
-import { LuPercent } from "react-icons/lu";
 
 interface Props {
   cmuAccount: string;
