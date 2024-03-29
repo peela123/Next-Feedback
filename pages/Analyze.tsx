@@ -4,10 +4,8 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 
 import { WhoAmIResponse } from "./api/whoAmI";
 
-import Navbar from "./components/Navbar";
 import SideBar from "./components/SideBar";
 
-import { Label } from "recharts";
 import { FaSearchPlus } from "react-icons/fa";
 import OverallSummary from "./components/OverallSummary";
 import ImproveSummary from "./components/ImproveSummary";

@@ -15,3 +15,12 @@ module.exports = {
     ignoreBuildErrors: true,
   },
 };
+
+const withTM = require("next-transpile-modules")(["@mui/x-charts"]); // Add your packages here
+
+module.exports = withTM({
+  webpack: (config) => {
+    // further customizations to webpack config
+    return config;
+  },
+});

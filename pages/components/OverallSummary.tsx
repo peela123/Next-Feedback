@@ -4,7 +4,6 @@ import { FetchedCourse, Comment } from "../../types/CommentType";
 import axios from "axios";
 
 import { BarChart } from "@mui/x-charts/BarChart";
-
 interface Props {
   cmuAccount: string;
   courseNo: number | undefined;
